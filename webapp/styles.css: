@@ -1,0 +1,18 @@
+:root { --bg:#0e0f12; --text:#fff; --card:#14161b; --muted:#9aa4b2; --accent:#2f80ed; }
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.hero{padding:48px 20px;text-align:center;max-width:960px;margin:0 auto}
+.logo{display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid #2a2f36;margin-bottom:12px;font-weight:700}
+.hero h1{font-size:32px;margin:8px 0}
+.hero p{color:var(--muted);margin:0 0 22px}
+.cta-row{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border:1px solid #2a2f36;color:#fff}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:960px;margin:10px auto;padding:0 14px}
+.f{background:var(--card);border:1px solid #20242b;padding:16px;border-radius:14px}
+.f p{margin:0;color:var(--muted)}
+.pricing{max-width:960px;margin:28px auto;padding:0 14px;text-align:center}
+.card{display:inline-block;text-align:left;background:var(--card);border:1px solid #20242b;border-radius:16px;padding:18px;min-width:260px}
+.price{margin:8px 0 12px;font-weight:700}
+.footer{text-align:center;color:var(--muted);padding:28px 0 36px;font-size:14px}
