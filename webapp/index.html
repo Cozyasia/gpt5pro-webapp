@@ -3,52 +3,177 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GPT-5 PRO</title>
-  <meta name="description" content="Умный ассистент GPT-5 PRO: быстрые ответы, готовые решения, подписка в один клик." />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>GPT-5 PRO — умный помощник в Telegram</title>
+
+  <!-- OpenGraph/Preview -->
+  <meta property="og:title" content="GPT-5 PRO — умный помощник в Telegram">
+  <meta property="og:description" content="Быстрые ответы, готовые решения и автоматизация задач. Бесплатно 3 дня.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'%3E%3Crect width='100%25' height='100%25' fill='%230A0A0B'/%3E%3Ctext x='50%25' y='55%25' fill='%23ffffff' font-family='Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial' font-size='72' font-weight='700' text-anchor='middle'%3EGPT-5 PRO%3C/text%3E%3C/svg%3E" />
+
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --card: #121214;
+      --text: #e8e8ea;
+      --muted: #a6a6ab;
+      --brand: #7ee787;       /* мягкий акцент */
+      --accent: #8ab4ff;      /* вторичный акцент */
+      --border: #232326;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root{
+        --bg: #f7f7f8; --card:#ffffff; --text:#121214; --muted:#5a5a63;
+        --border:#e9e9ef; --shadow: 0 8px 20px rgba(0,0,0,.06);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1000px;margin:0 auto;padding:24px 18px 80px}
+    header{
+      display:flex;align-items:center;gap:16px;margin:6px 0 24px
+    }
+    .logo{
+      width:60px;height:60px;border-radius:50%;
+      background:#fff;display:grid;place-items:center;border:1px solid var(--border);
+      box-shadow:var(--shadow)
+    }
+    .knot{width:36px;height:36px;display:block}
+    .brand{font-weight:800;letter-spacing:.3px}
+    .badge{display:inline-flex;gap:6px;align-items:center;background:var(--card);border:1px solid var(--border);padding:6px 10px;border-radius:999px;color:var(--muted)}
+    .hero{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+      padding:22px;box-shadow:var(--shadow)
+    }
+    .hero h1{margin:6px 0 10px;font-size:28px;line-height:1.15}
+    .hero p{margin:0 0 18px;color:var(--muted)}
+    .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      padding:12px 16px;border-radius:12px;border:1px solid var(--border);font-weight:700;
+      display:inline-flex;gap:10px;align-items:center;transition:.15s transform ease, .15s opacity ease
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--brand);color:#0b0e0f;border-color:transparent}
+    .btn-secondary{background:transparent}
+    .grid{display:grid;gap:12px;margin:14px 0}
+    @media(min-width:760px){.grid{grid-template-columns:repeat(3,1fr)}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .card h3{margin:0 0 8px;font-size:18px}
+    .muted{color:var(--muted)}
+    .steps{display:grid;gap:10px;margin:6px 0}
+    .step{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px}
+    .step .num{background:#1f2722;color:var(--brand);border:1px solid #2b3a30;width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-weight:800}
+    .pricing{
+      display:grid;gap:12px;margin-top:6px
+    }
+    @media(min-width:760px){.pricing{grid-template-columns:repeat(3,1fr)}}
+    .price{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+    .price .amount{font-weight:900;font-size:22px}
+    .price ul{margin:0;padding-left:18px;color:var(--muted)}
+    details{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px}
+    summary{cursor:pointer;font-weight:700}
+    footer{margin-top:26px;color:var(--muted);font-size:14px;text-align:center}
+  </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="logo">GPT-5 PRO</div>
-    <h1>Твой AI-ассистент в Telegram</h1>
-    <p>От быстрых ответов до сложных задач — один бот, одна подписка.</p>
-    <div class="cta-row">
-      <a class="btn primary" href="https://t.me/ВАШ_БОТ?start=start">Открыть бота</a>
-      <a class="btn ghost" href="#pricing">Тарифы</a>
-    </div>
-  </header>
+  <div class="wrap">
 
-  <section class="features">
-    <div class="f"><h3>⚡ Скорость</h3><p>Мгновенные ответы 24/7.</p></div>
-    <div class="f"><h3>🧰 Инструменты</h3><p>Память, файлы, шаблоны.</p></div>
-    <div class="f"><h3>🛡️ Надёжность</h3><p>Render, мониторинг, авто-рестарт.</p></div>
-  </section>
+    <header>
+      <div class="logo" aria-hidden="true">
+        <!-- Чёрный логотип в белом круге (SVG, без внешних файлов) -->
+        <svg class="knot" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#0f1113" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M128 24c-27 0-46 14-58 26-13 13-26 31-26 58 0 28 14 46 26 58 13 13 31 26 58 26 28 0 46-13 58-26 13-12 26-30 26-58 0-27-13-45-26-58-12-12-30-26-58-26Z"/>
+          <path d="M88 88l80 80M168 88l-80 80"/>
+        </svg>
+      </div>
+      <div>
+        <div class="badge">🤖 Мини-приложение</div>
+        <div class="brand">GPT-5 PRO · умный помощник</div>
+      </div>
+    </header>
 
-  <section id="pricing" class="pricing">
-    <h2>Тарифы</h2>
-    <div class="card">
-      <h3>PRO</h3>
-      <p class="price">от 299 ₽ / мес</p>
-      <ul>
-        <li>Безлимитные чаты</li>
-        <li>Приоритетные ответы</li>
-        <li>Доступ к инструментам</li>
-      </ul>
-      <a class="btn primary" href="https://t.me/ВАШ_БОТ?start=buy">Подключить</a>
-    </div>
-  </section>
+    <section class="hero">
+      <h1>Личный ИИ-ассистент прямо в Telegram</h1>
+      <p>Пишем, анализируем, считаем и автоматизируем. Готовые решения и быстрые ответы — без лишней суеты.</p>
+      <div class="cta">
+        <!-- Открыть бота -->
+        <a class="btn btn-primary" href="https://t.me/progpt5_bot" target="_blank" rel="noopener">⚡ Открыть бота</a>
+        <!-- Якорь на тарифы ниже -->
+        <a class="btn btn-secondary" href="#pricing">💳 Тарифы</a>
+      </div>
+    </section>
 
-  <footer class="footer"><p>© GPT-5 PRO.</p></footer>
+    <section class="grid" aria-label="Возможности">
+      <article class="card">
+        <h3>✍️ Пишем и редактируем</h3>
+        <p class="muted">Посты, статьи, письма, ТЗ, ответы для поддержки — быстро и по тону бренда.</p>
+      </article>
+      <article class="card">
+        <h3>📊 Анализ и расчёты</h3>
+        <p class="muted">Сводки, таблицы, формулы, отчёты — на языке бизнеса, а не технаря.</p>
+      </article>
+      <article class="card">
+        <h3>🔄 Автоматизация</h3>
+        <p class="muted">Шаблоны, макросы, готовые сценарии — меньше ручной рутины, больше результата.</p>
+      </article>
+    </section>
 
-  <script>
-    if (window.Telegram && Telegram.WebApp?.themeParams) {
-      const tp = Telegram.WebApp.themeParams;
-      document.documentElement.style.setProperty('--bg', tp.bg_color ?? '#0e0f12');
-      document.documentElement.style.setProperty('--card', tp.secondary_bg_color ?? '#14161b');
-      document.documentElement.style.setProperty('--text', tp.text_color ?? '#ffffff');
-      document.documentElement.style.setProperty('--accent', tp.button_color ?? '#2f80ed');
-    }
-  </script>
+    <section aria-label="Как начать">
+      <h2 style="margin:14px 0 8px">Как начать</h2>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><div>Нажми «Открыть бота»</div></div>
+        <div class="step"><div class="num">2</div><div>Выбери режим «🚀 Быстрый старт»</div></div>
+        <div class="step"><div class="num">3</div><div>Опиши задачу простым языком</div></div>
+      </div>
+    </section>
+
+    <section id="pricing" aria-label="Тарифы">
+      <h2 style="margin:18px 0 8px">Тарифы</h2>
+      <div class="pricing">
+        <div class="price">
+          <div><strong>Пробный</strong></div>
+          <div class="amount">0 ₽ · 3 дня</div>
+          <ul>
+            <li>Базовые режимы</li><li>Ограниченный объём</li>
+          </ul>
+          <a class="btn btn-primary" href="https://t.me/progpt5_bot" target="_blank" rel="noopener">Попробовать</a>
+        </div>
+        <div class="price" style="border-color:#2b3a30">
+          <div><strong>PRO</strong> — рекомендовано</div>
+          <div class="amount">990 ₽ / мес</div>
+          <ul>
+            <li>Все режимы</li><li>Приоритетные ответы</li><li>Личные шаблоны</li>
+          </ul>
+          <a class="btn btn-primary" href="https://t.me/progpt5_bot" target="_blank" rel="noopener">Оформить</a>
+        </div>
+        <div class="price">
+          <div><strong>Business</strong></div>
+          <div class="amount">от 4 990 ₽ / мес</div>
+          <ul>
+            <li>Командный доступ</li><li>Интеграции и автомations</li><li>Поддержка SLA</li>
+          </ul>
+          <a class="btn btn-secondary" href="https://t.me/progpt5_bot" target="_blank" rel="noopener">Связаться</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="FAQ" style="margin-top:18px;display:grid;gap:10px">
+      <details>
+        <summary>Это безопасно?</summary>
+        <div class="muted" style="margin-top:8px">Мы не публикуем ваши данные и не используем их для обучения. Для бизнеса — отдельные контуры.</div>
+      </details>
+      <details>
+        <summary>Можно отменить в любой момент?</summary>
+        <div class="muted" style="margin-top:8px">Да, подписку можно остановить в пару кликов прямо в боте.</div>
+      </details>
+    </section>
+
+    <footer>
+      GPT-5 PRO © 2025 · Сделано с заботой об эффективности
+    </footer>
+  </div>
 </body>
 </html>
