@@ -12,6 +12,8 @@
   <meta name="theme-color" content="#0f1115" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- preloaded banner -->
+  <link rel="preload" as="image" href="assets/IMG_3451.jpeg">
   <style>
     :root{
       --bg:#0f1115; --card:#151922; --text:#e8eefc; --muted:#a8b0c2;
@@ -37,7 +39,17 @@
     .title{font-weight:700; font-size:18px}
     .tag{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
       background:#10161f; color:var(--muted); border:1px solid var(--stroke); font-size:13px;}
-    .hero{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); padding:22px; margin-bottom:var(--gap)}
+    .hero{
+      background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius);
+      padding:22px; margin-bottom:var(--gap); box-shadow:0 6px 24px rgba(0,0,0,.22)
+    }
+    /* responsive banner */
+    .hero-banner{
+      width:100%; display:block; border-radius:16px;
+      margin:-4px 0 16px;
+      aspect-ratio:16/9; object-fit:cover; background:#0b0e13;
+      box-shadow:0 6px 24px rgba(0,0,0,.25)
+    }
     h1{margin:0 0 10px;font-size:28px;line-height:1.2}
     .lead{color:var(--muted); margin:0 0 20px}
     .row{display:flex; flex-wrap:wrap; gap:12px}
@@ -63,7 +75,6 @@
     }
     .sticky .inner{max-width:var(--max); margin:0 auto; display:flex; gap:10px; padding:0 6px}
     .sticky .btn{flex:1}
-    .hero, .card { box-shadow:0 6px 24px rgba(0,0,0,.22) }
     .fade{animation:fade .5s ease both}
     @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
   </style>
@@ -79,6 +90,12 @@
     </header>
 
     <section class="hero fade">
+      <!-- Баннер -->
+      <img src="assets/IMG_3451.jpeg"
+           alt="GPT-5 PRO — лаборатория кода и задач"
+           class="hero-banner"
+           loading="eager"
+           decoding="async">
       <h1>Личный ИИ-ассистент прямо в Telegram</h1>
       <p class="lead">Пишем, анализируем, считаем и автоматизируем. Готовые решения и быстрые ответы — без лишней суеты.</p>
       <div class="row">
@@ -114,7 +131,6 @@
         <li><span class="tick">✅</span>Оплата в один клик в Telegram</li>
       </ul>
       <div class="row" style="margin-top:14px">
-        <!-- Эти две кнопки тоже шлют событие в бота -->
         <a class="btn btn-primary" href="#" data-action="plan_from_webapp">Оформить подписку</a>
         <a class="btn btn-secondary" href="#" data-action="help_from_webapp">Задать вопрос</a>
       </div>
@@ -153,45 +169,37 @@
     function openInTelegramFallback(startParam){
       const {deep, https} = makeLinks(startParam);
       try {
-        window.location.href = deep;             // попытка открыть приложение
-        setTimeout(()=>{ window.location.href = https; }, 700); // фолбэк в web
+        window.location.href = deep;
+        setTimeout(()=>{ window.location.href = https; }, 700);
       } catch(_) {
         window.location.href = https;
       }
     }
 
     function sendToBotAndClose(payload, startParam){
-      // Если реально запущено как Mini App – шлём данные и закрываем webview
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         try { tg.sendData(JSON.stringify(payload)); } catch(_) {}
         try { tg.close(); } catch(_) {}
       } else {
-        // Иначе открываем чат бота с соответствующим start-параметром
         openInTelegramFallback(startParam);
       }
     }
 
-    // Кнопки "Открыть бота"
     const openButtons = [document.getElementById('open-bot'), document.getElementById('open-bot-sticky')].filter(Boolean);
     openButtons.forEach(btn => btn.addEventListener('click', (e) => {
       e.preventDefault();
       sendToBotAndClose({ type: 'open_bot' }, 'from_webapp');
     }));
 
-    // Кнопки с data-action (подписка/вопрос)
     document.querySelectorAll('[data-action]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         const action = el.getAttribute('data-action') || 'unknown';
-        sendToBotAndClose({ type: action }, action); // ивент + корректный start в фолбэке
+        sendToBotAndClose({ type: action }, action);
       });
     });
 
-    // Небольшие улучшения UX, когда реально в WebApp
-    if (tg) {
-      try { tg.expand(); } catch(_) {}
-      try { tg.ready();  } catch(_) {}
-    }
+    if (tg) { try { tg.expand(); tg.ready(); } catch(_) {} }
   })();
   </script>
 </body>
