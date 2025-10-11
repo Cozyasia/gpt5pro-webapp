@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>GPT-5 PRO — умный помощник в Telegram</title>
-  <meta name="description" content="Учёба, работа и быт: пишем, считаем, анализируем, ищем в интернете, понимаем фото и распознаём голос — прямо в Telegram." />
+  <meta name="description" content="Учёба, работа и быт: пишем, считаем, анализируем, ищем в интернете, понимаем фото и распознаём голос — прямо в Telegram и в веб-чате." />
   <meta property="og:title" content="GPT-5 PRO — умный помощник в Telegram" />
   <meta property="og:description" content="Пишем, анализируем, автоматизируем. Готовые решения и быстрые ответы — без лишней суеты." />
   <meta property="og:type" content="website" />
@@ -20,25 +20,40 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{ margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; line-height:1.55;}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--text); background:var(--bg);
+      -webkit-font-smoothing:antialiased; line-height:1.55;
+    }
     a{color:inherit}
     .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 120px}
     header{display:flex; align-items:center; gap:14px; margin-bottom:22px}
-    .logo{ width:44px; height:44px; border-radius:50%; background:#fff center/72% no-repeat;
-      box-shadow:0 0 0 1px var(--stroke) inset; background-image:url('logo_circle_black_on_white.png'); }
+    .logo{
+      width:44px; height:44px; border-radius:50%;
+      background:#fff center/72% no-repeat;
+      box-shadow:0 0 0 1px var(--stroke) inset;
+      background-image:url('logo_circle_black_on_white.png');
+    }
     .title{font-weight:700; font-size:18px}
     .tag{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
       background:#10161f; color:var(--muted); border:1px solid var(--stroke); font-size:13px;}
-    .hero{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); padding:22px; margin-bottom:var(--gap)}
-    /* responsive banner */
-    .hero-banner{ width:100%; display:block; border-radius:16px; margin:-4px 0 16px; aspect-ratio:16/9; object-fit:cover; background:#0b0e13; box-shadow:0 6px 24px rgba(0,0,0,.25)}
+    .hero{
+      background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius);
+      padding:22px; margin-bottom:var(--gap); box-shadow:0 6px 24px rgba(0,0,0,.22)
+    }
+    .hero-banner{
+      width:100%; display:block; border-radius:16px;
+      margin:-4px 0 16px; aspect-ratio:16/9; object-fit:cover; background:#0b0e13;
+      box-shadow:0 6px 24px rgba(0,0,0,.25)
+    }
     h1{margin:0 0 10px;font-size:28px;line-height:1.2}
     .lead{color:var(--muted); margin:0 0 20px}
     .row{display:flex; flex-wrap:wrap; gap:12px}
-    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
       padding:14px 18px; border-radius:12px; font-weight:700; text-decoration:none;
-      border:1px solid transparent; transition:.2s transform ease,.2s background ease,.2s border-color ease;}
+      border:1px solid transparent; transition:.2s transform ease,.2s background ease,.2s border-color ease;
+    }
     .btn:hover{transform:translateY(-1px)}
     .btn-primary{background:var(--accent); color:#04110a}
     .btn-secondary{background:#10161f; color:#eaf5ff; border-color:var(--stroke)}
@@ -47,11 +62,11 @@
     .card{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); padding:18px}
     .card h3{margin:0 0 8px}
     .muted{color:var(--muted)}
-    .tick{margin-right:6px}
     footer{margin:28px 0 0; color:var(--muted); font-size:13px}
     .sticky{position:fixed; left:0; right:0; bottom:0; padding:10px 14px 18px;
       background:linear-gradient(180deg,transparent,rgba(15,17,21,.9) 30%, rgba(15,17,21,1));
-      backdrop-filter:saturate(1.1) blur(2px);}
+      backdrop-filter:saturate(1.1) blur(2px);
+    }
     .sticky .inner{max-width:var(--max); margin:0 auto; display:flex; gap:10px; padding:0 6px}
     .sticky .btn{flex:1}
     .fade{animation:fade .5s ease both}
@@ -72,11 +87,12 @@
       <img src="assets/IMG_3451.jpeg" alt="GPT-5 PRO — панорама возможностей" class="hero-banner">
       <h1>Учёба 📚 · Работа 💼 · Код 💻 · Контент ✍️ · Данные 📊</h1>
       <p class="lead">
-        Пишем и редактируем, считаем и анализируем, ищем факты в сети 🌐,
-        понимаем фото 🖼️ и распознаём голос 🎙️ — всё прямо в Telegram.
+        Пишем и редактируем, считаем и анализируем, ищем факты в сети 🌐, понимаем фото 🖼️ и распознаём голос 🎙️ —
+        всё прямо в Telegram <b>и в веб-чате</b>.
       </p>
       <div class="row">
         <a id="open-bot" class="btn btn-primary" href="#" role="button">⚡ Открыть бота</a>
+        <a class="btn btn-secondary" href="chat.html">💬 Веб-чат</a>
         <a class="btn btn-secondary" href="premium.html">💳 Тарифы</a>
         <a class="btn btn-secondary" href="terms.html">📄 Условия</a>
       </div>
@@ -104,25 +120,26 @@
     <section id="pricing" class="card fade" style="margin-top:20px; animation-delay:.1s">
       <h3>💳 Тарифы</h3>
       <ul class="muted" style="margin:10px 0 0; padding-left:18px">
-        <li><span class="tick">✅</span>Пробный период 3 дня</li>
-        <li><span class="tick">✅</span>Доступ ко всем режимам</li>
-        <li><span class="tick">✅</span>Оплата в один клик в Telegram</li>
+        <li>✅ Пробный период 3 дня</li>
+        <li>✅ Доступ ко всем режимам</li>
+        <li>✅ Оплата в один клик в Telegram</li>
       </ul>
       <div class="row" style="margin-top:14px">
         <a class="btn btn-primary" href="#" data-action="plan_from_webapp">Оформить подписку</a>
         <a class="btn btn-secondary" href="#" data-action="help_from_webapp">Задать вопрос</a>
-        <a class="btn btn-secondary" href="index.html">⬅️ На главную</a>
+        <a class="btn btn-secondary" href="chat.html">💬 Веб-чат</a>
       </div>
     </section>
 
     <footer class="fade" style="animation-delay:.15s">
-      © GPT-5 PRO · Сделано с заботой об удобстве. <span class="muted">Нажимая на кнопки, вы переходите в Telegram-бота.</span>
+      © GPT-5 PRO · Сделано с заботой об удобстве. <span class="muted">Нажимая на кнопки, вы переходите в Telegram-бота либо веб-чат.</span>
     </footer>
   </div>
 
   <div class="sticky">
     <div class="inner">
       <a id="open-bot-sticky" class="btn btn-primary" href="#" role="button">⚡ Открыть бота</a>
+      <a class="btn btn-secondary" href="chat.html">💬 Веб-чат</a>
       <a class="btn btn-secondary" href="#pricing">💳 Тарифы</a>
     </div>
   </div>
@@ -131,28 +148,19 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
   (function () {
-    const BOT_USERNAME = 'progpt5_bot';
+    const BOT_USERNAME = 'progpt5_bot';   // ← твой бот
     const tg = window.Telegram?.WebApp;
 
     function makeLinks(startParam){
       const p = startParam ? `&start=${encodeURIComponent(startParam)}` : '';
       const q = startParam ? `?start=${encodeURIComponent(startParam)}` : '';
-      return {
-        deep: `tg://resolve?domain=${BOT_USERNAME}${p}`,
-        https: `https://t.me/${BOT_USERNAME}${q}`
-      };
+      return { deep:`tg://resolve?domain=${BOT_USERNAME}${p}`, https:`https://t.me/${BOT_USERNAME}${q}` };
     }
-
     function openInTelegramFallback(startParam){
       const {deep, https} = makeLinks(startParam);
-      try {
-        window.location.href = deep;
-        setTimeout(()=>{ window.location.href = https; }, 700);
-      } catch(_) {
-        window.location.href = https;
-      }
+      try { window.location.href = deep; setTimeout(()=>{ window.location.href = https; }, 700); }
+      catch(_) { window.location.href = https; }
     }
-
     function sendToBotAndClose(payload, startParam){
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         try { tg.sendData(JSON.stringify(payload)); } catch(_) {}
@@ -162,12 +170,14 @@
       }
     }
 
+    // «Открыть бота» (верх + снизу)
     const openButtons = [document.getElementById('open-bot'), document.getElementById('open-bot-sticky')].filter(Boolean);
     openButtons.forEach(btn => btn.addEventListener('click', (e) => {
       e.preventDefault();
       sendToBotAndClose({ type: 'open_bot' }, 'from_webapp');
     }));
 
+    // события из секции «Тарифы/Вопрос»
     document.querySelectorAll('[data-action]').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
