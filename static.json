@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "src": "/premium", "dest": "/premium.html" },
+    { "src": "/terms",   "dest": "/terms.html"  },
+    { "src": "/pricing", "dest": "/premium.html" }
+  ]
+}
