@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GPT-5 PRO — Тариф</title>
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#0f1115; --card:#151922; --text:#e8eefc; --muted:#a8b0c2; --accent:#3ef07d; --stroke:#272c36; --radius:16px; --max:820px;}
+    *{box-sizing:border-box} body{margin:0; font-family:Inter,system-ui; color:var(--text); background:var(--bg);}
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px 16px 80px}
+    h1{margin:0 0 8px} .lead{color:var(--muted); margin:0 0 18px}
+    .card{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); padding:18px; margin-bottom:16px}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 16px; border-radius:12px; font-weight:700; text-decoration:none; border:1px solid transparent}
+    .btn-primary{background:var(--accent); color:#04110a} .btn-secondary{background:#10161f; color:#eaf5ff; border-color:var(--stroke)}
+    ul{margin:8px 0 0 18px} .muted{color:var(--muted)}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    a{color:inherit}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>💳 Тариф GPT-5 PRO</h1>
+    <p class="lead">Один план — всё включено. 3 дня бесплатно, затем — <b>499 ₽/мес</b>.</p>
+
+    <div class="card">
+      <h3>Что входит:</h3>
+      <ul>
+        <li>🤖 Ответы от модели GPT-5 PRO.</li>
+        <li>🌐 Поиск в интернете с краткой сводкой и ссылками.</li>
+        <li>🖼️ Анализ изображений: описание, OCR, схемы/графики.</li>
+        <li>🎧 Распознавание голоса (голосовые/аудио).</li>
+        <li>📚 Учёба: эссе/конспекты, задачи, объяснения.</li>
+        <li>💼 Работа: письма, ТЗ/брифы, чек-листы, идеи.</li>
+      </ul>
+      <div class="row">
+        <a id="btn-subscribe" class="btn btn-primary" href="#">⭐ Оформить подписку</a>
+        <a id="btn-ask" class="btn btn-secondary" href="#">❓ Задать вопрос</a>
+        <a class="btn btn-secondary" href="index.html">⬅️ На главную</a>
+      </div>
+      <p class="muted" style="margin-top:12px">Оплачивая подписку, вы принимаете <a href="terms.html">Условия использования</a>.</p>
+    </div>
+
+    <div class="card">
+      <h3>FAQ</h3>
+      <ul>
+        <li><b>Как списывается оплата?</b> Раз в месяц, можно отменить в любой момент.</li>
+        <li><b>Будет ли лимит?</b> Разумная защита от спама и чрезмерных нагрузок. Для бизнеса — напишите нам.</li>
+        <li><b>Как связаться?</b> Email: <a href="mailto:sale.rielt@bk.ru">sale.rielt@bk.ru</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function(){
+      const BOT_USERNAME = 'progpt5_bot';
+      const tg = window.Telegram?.WebApp;
+
+      function toBot(startParam){
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          try { tg.sendData(JSON.stringify({ type:startParam })); } catch(_) {}
+          try { tg.close(); } catch(_) {}
+        } else {
+          const q = `?start=${encodeURIComponent(startParam)}`;
+          const deep = `tg://resolve?domain=${BOT_USERNAME}&start=${encodeURIComponent(startParam)}`;
+          const web  = `https://t.me/${BOT_USERNAME}${q}`;
+          try { window.location.href = deep; setTimeout(()=>{ window.location.href = web; }, 600); }
+          catch(_){ window.location.href = web; }
+        }
+      }
+
+      document.getElementById('btn-subscribe')?.addEventListener('click', (e)=>{ e.preventDefault(); toBot('plan_from_webapp'); });
+      document.getElementById('btn-ask')?.addEventListener('click', (e)=>{ e.preventDefault(); toBot('help_from_webapp'); });
+
+      if (tg) { try{ tg.expand(); tg.ready(); }catch(_){} }
+    })();
+  </script>
+</body>
+</html>
