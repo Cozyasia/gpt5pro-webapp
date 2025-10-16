@@ -8,12 +8,9 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
-      /* Fallback цвета */
       --bg:#0f1115; --card:#171a21; --text:#ffffff; --muted:#b3b8c3;
-      --primary:#2ea44f; --primary-2:#238636; --stroke:#272b33;
-      --accent:#7c9fff;
+      --primary:#2ea44f; --primary-2:#238636; --stroke:#272b33; --accent:#7c9fff;
     }
-    /* Подхватываем тему Telegram */
     .tg-theme {
       --bg: var(--tg-theme-bg-color, #0f1115);
       --text: var(--tg-theme-text-color, #ffffff);
@@ -33,7 +30,7 @@
     }
     .wrap{max-width:880px; margin:0 auto; padding:18px}
     .hero{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,0)) ;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,0));
       border-radius:16px; padding:18px; display:flex; gap:14px; align-items:center;
       border:1px solid var(--stroke);
     }
@@ -45,20 +42,12 @@
     .logo span{font-size:12px; opacity:.8}
     h1{margin:0 0 4px; font-size:22px}
     .muted{color:var(--muted)}
-    .grid{
-      display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; margin-top:16px;
-    }
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; margin-top:16px;}
     @media (max-width:820px){ .grid{grid-template-columns:1fr} }
-    .card{
-      background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:18px;
-    }
-    .price{
-      display:flex; align-items:baseline; gap:10px; margin:4px 0 8px;
-    }
+    .card{background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:18px;}
+    .price{display:flex; align-items:baseline; gap:10px; margin:4px 0 8px;}
     .price .amount{font-size:28px; font-weight:800}
-    .badge{
-      font-size:12px; padding:6px 10px; border-radius:999px; background:#00000022; border:1px solid var(--stroke);
-    }
+    .badge{font-size:12px; padding:6px 10px; border-radius:999px; background:#00000022; border:1px solid var(--stroke);}
     .features{margin:10px 0 0; padding:0; list-style:none}
     .features li{margin:8px 0; display:flex; gap:10px; align-items:flex-start}
     .features li::before{content:"✅"; margin-top:2px}
@@ -68,9 +57,7 @@
       cursor:pointer; margin-top:12px;
     }
     .btn:active{transform:translateY(1px)}
-    .btn.secondary{
-      background:transparent; color:var(--text); border:1px solid var(--stroke);
-    }
+    .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--stroke);}
     details{border:1px solid var(--stroke); border-radius:12px; padding:12px 14px; background:var(--card)}
     details + details{margin-top:10px}
     details summary{cursor:pointer; font-weight:600}
@@ -163,29 +150,61 @@
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand(); // используем всю высоту
-    // Подхватываем основной цвет кнопки из темы TG (если есть)
-    const buttonColor = tg.themeParams?.button_color;
-    if (buttonColor) document.documentElement.style.setProperty('--primary', buttonColor);
+    // ==== настройки ====
+    const BOT_USERNAME = 'progpt5_bot';         // при необходимости замени
+    const SUPPORT_USERNAME = 'progpt5_bot';     // сюда поставь аккаунт саппорта
 
-    // Оплата — отправляем сигнал боту
+    const tg = window.Telegram?.WebApp;
+
+    const inTelegram = () => !!tg?.initDataUnsafe;
+
+    const deepLink = (start) =>
+      `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(start)}`;
+
+    const safeSend = (type, extra = {}) => {
+      // Отправляем web_app_data в бота; если не получилось — fallback по deep-link
+      const payload = JSON.stringify({ type, ...extra });
+      try {
+        tg?.sendData(payload);
+      } catch (e) {
+        // открыли страницу в браузере? Перекинем в чат с ботом
+        window.location.href = deepLink(type);
+      }
+    };
+
+    // Инициализация
+    (function init(){
+      if (tg?.ready) {
+        tg.ready();
+        tg.expand();
+        // подтягиваем цвет кнопки из темы
+        if (tg.themeParams?.button_color) {
+          document.documentElement.style.setProperty('--primary', tg.themeParams.button_color);
+        }
+        tg.HapticFeedback?.impactOccurred('light');
+        // <<< PATCH: уведомляем бота, что открыли тарифы
+        try { tg.sendData(JSON.stringify({ type: 'open_tariff' })); } catch(e){}
+      }
+    })();
+
+    // Кнопки
     document.getElementById('buy').addEventListener('click', () => {
-      tg.sendData(JSON.stringify({ type: 'subscribe' })); // бот пришлёт invoice
-      tg.close(); // сворачиваем WebApp
+      safeSend('subscribe');   // бот пришлёт invoice
+      tg?.close();             // аккуратно сворачиваем мини-приложение
     });
 
-    // Статус — пусть бот ответит командой /status
     document.getElementById('status').addEventListener('click', () => {
-      tg.sendData(JSON.stringify({ type: 'status' })); // при желании обработай в боте
-      tg.close();
+      safeSend('status');      // бот вернёт статус подписки
+      tg?.close();
     });
 
-    // Поддержка — открываем чат с ботом/аккаунтом поддержки
     document.getElementById('support').addEventListener('click', () => {
-      // замените username на нужный; сейчас — ваш бот
-      tg.openTelegramLink('https://t.me/progpt5_bot');
+      // сначала дадим сигнал в бота
+      safeSend('help_from_webapp');
+      // затем — откроем чат саппорта
+      const link = `https://t.me/${SUPPORT_USERNAME}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(link);
+      else window.location.href = link;
     });
   </script>
 </body>
