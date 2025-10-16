@@ -6,6 +6,11 @@
   <title>GPT5PRO — Подписка</title>
   <meta name="color-scheme" content="dark light">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- ✅ Подключаем внешние файлы (мягко, ничего не ломаем) -->
+  <link rel="stylesheet" href="./premium.css">
+  <script type="module" src="./premium.js"></script>
+
   <style>
     :root{
       --bg:#0f1115; --card:#171a21; --text:#ffffff; --muted:#b3b8c3;
@@ -150,62 +155,65 @@
   </div>
 
   <script>
-    // ==== настройки ====
-    const BOT_USERNAME = 'progpt5_bot';         // при необходимости замени
-    const SUPPORT_USERNAME = 'progpt5_bot';     // сюда поставь аккаунт саппорта
+    // Если premium.js уже подключён и инициализировал страницу — не дублируем обработчики.
+    if (!window.__GPT5PRO_PREMIUM_JS_LOADED) {
+      // ==== настройки ====
+      const BOT_USERNAME = 'progpt5_bot';         // при необходимости замени
+      const SUPPORT_USERNAME = 'progpt5_bot';     // сюда поставь аккаунт саппорта
 
-    const tg = window.Telegram?.WebApp;
+      const tg = window.Telegram?.WebApp;
 
-    const inTelegram = () => !!tg?.initDataUnsafe;
+      const inTelegram = () => !!tg?.initDataUnsafe;
 
-    const deepLink = (start) =>
-      `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(start)}`;
+      const deepLink = (start) =>
+        `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(start)}`;
 
-    const safeSend = (type, extra = {}) => {
-      // Отправляем web_app_data в бота; если не получилось — fallback по deep-link
-      const payload = JSON.stringify({ type, ...extra });
-      try {
-        tg?.sendData(payload);
-      } catch (e) {
-        // открыли страницу в браузере? Перекинем в чат с ботом
-        window.location.href = deepLink(type);
-      }
-    };
-
-    // Инициализация
-    (function init(){
-      if (tg?.ready) {
-        tg.ready();
-        tg.expand();
-        // подтягиваем цвет кнопки из темы
-        if (tg.themeParams?.button_color) {
-          document.documentElement.style.setProperty('--primary', tg.themeParams.button_color);
+      const safeSend = (type, extra = {}) => {
+        // Отправляем web_app_data в бота; если не получилось — fallback по deep-link
+        const payload = JSON.stringify({ type, ...extra });
+        try {
+          tg?.sendData(payload);
+        } catch (e) {
+          // открыли страницу в браузере? Перекинем в чат с ботом
+          window.location.href = deepLink(type);
         }
-        tg.HapticFeedback?.impactOccurred('light');
-        // <<< PATCH: уведомляем бота, что открыли тарифы
-        try { tg.sendData(JSON.stringify({ type: 'open_tariff' })); } catch(e){}
-      }
-    })();
+      };
 
-    // Кнопки
-    document.getElementById('buy').addEventListener('click', () => {
-      safeSend('subscribe');   // бот пришлёт invoice
-      tg?.close();             // аккуратно сворачиваем мини-приложение
-    });
+      // Инициализация
+      (function init(){
+        if (tg?.ready) {
+          tg.ready();
+          tg.expand();
+          // подтягиваем цвет кнопки из темы
+          if (tg.themeParams?.button_color) {
+            document.documentElement.style.setProperty('--primary', tg.themeParams.button_color);
+          }
+          tg.HapticFeedback?.impactOccurred('light');
+          // уведомляем бота, что открыли тарифы
+          try { tg.sendData(JSON.stringify({ type: 'open_tariff' })); } catch(e){}
+        }
+      })();
 
-    document.getElementById('status').addEventListener('click', () => {
-      safeSend('status');      // бот вернёт статус подписки
-      tg?.close();
-    });
+      // Кнопки
+      document.getElementById('buy').addEventListener('click', () => {
+        safeSend('subscribe');   // бот пришлёт invoice
+        tg?.close();             // аккуратно сворачиваем мини-приложение
+      });
 
-    document.getElementById('support').addEventListener('click', () => {
-      // сначала дадим сигнал в бота
-      safeSend('help_from_webapp');
-      // затем — откроем чат саппорта
-      const link = `https://t.me/${SUPPORT_USERNAME}`;
-      if (tg?.openTelegramLink) tg.openTelegramLink(link);
-      else window.location.href = link;
-    });
+      document.getElementById('status').addEventListener('click', () => {
+        safeSend('status');      // бот вернёт статус подписки
+        tg?.close();
+      });
+
+      document.getElementById('support').addEventListener('click', () => {
+        // сначала дадим сигнал в бота
+        safeSend('help_from_webapp');
+        // затем — откроем чат саппорта
+        const link = `https://t.me/${SUPPORT_USERNAME}`;
+        if (tg?.openTelegramLink) tg.openTelegramLink(link);
+        else window.location.href = link;
+      });
+    }
   </script>
 </body>
 </html>
