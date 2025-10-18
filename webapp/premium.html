@@ -17,12 +17,12 @@
     .wrap{max-width:980px;margin:0 auto;padding:12px 14px}
     /* компактная шапка */
     header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
-    .head-row{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 6px;}
+    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px 6px;} /* ← только бренд, без правых кнопок */
     .brand{display:flex;gap:8px;align-items:center;min-width:0}
     .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 24px}
-    h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55vw}
-    .muted-top{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55vw}
-    .head-actions{display:flex;gap:6px;align-items:center}
+    h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
+    .muted-top{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
+    .head-actions{display:none} /* ← скрыто мягко, чтобы не ломать стили */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
       padding:9px 12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
     .btn.secondary{background:#232b3f;color:var(--text);border:1px solid #2b3550}
@@ -56,10 +56,7 @@
         <div class="muted-top">Единый ИИ: тексты, озвучка, фото/видео, анализ документов</div>
       </div>
     </div>
-    <div class="head-actions">
-      <a class="btn secondary" href="#tariffs">Тарифы</a>
-      <button class="btn" id="btn-open-tariff">Оформить подписку</button>
-    </div>
+    <!-- head-actions убраны, чтобы шапка не перекрывала контент -->
   </div>
 </header>
 
@@ -237,12 +234,15 @@
 
 <script>
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  if(tg){ tg.expand(); }
+  if (tg) { tg.expand(); }
 
-  document.getElementById('btn-open-tariff').addEventListener('click', () => {
-    // дефолт — PRO на месяц
-    sendSubscribe('pro','month');
-  });
+  // Кнопка в шапке могла быть удалена — подключаем обработчик безопасно
+  const topBtn = document.getElementById('btn-open-tariff');
+  if (topBtn) {
+    topBtn.addEventListener('click', () => {
+      sendSubscribe('pro','month');
+    });
+  }
 
   document.getElementById('btn-help').addEventListener('click', () => {
     sendData({type:'help'});
@@ -261,11 +261,19 @@
   function sendSubscribe(tier, plan){
     sendData({type:'subscribe', tier, plan});
   }
+
+  // Фолбэк: если открыто вне Telegram WebView — редирект в бота на оплату
   function sendData(obj){
     try{
-      if(tg && tg.sendData){ tg.sendData(JSON.stringify(obj)); }
-      else{ alert('Откройте страницу из Telegram для оформления.'); }
-    }catch(e){ console.error(e); alert('Не удалось передать данные в Telegram.'); }
+      if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify(obj));
+      } else {
+        window.location.href = "https://t.me/gpt5pro_bot?start=subscribe";
+      }
+    } catch(e){
+      console.error(e);
+      window.location.href = "https://t.me/gpt5pro_bot?start=subscribe";
+    }
   }
 </script>
 </body>
