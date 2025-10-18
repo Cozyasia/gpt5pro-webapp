@@ -236,6 +236,9 @@
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
   if (tg) { tg.expand(); }
 
+  // username бота берём из query: ?bot=gpt5pro_bot
+  const BOT_USERNAME = new URLSearchParams(location.search).get('bot') || '';
+
   // Кнопка в шапке могла быть удалена — подключаем обработчик безопасно
   const topBtn = document.getElementById('btn-open-tariff');
   if (topBtn) {
@@ -244,9 +247,12 @@
     });
   }
 
-  document.getElementById('btn-help').addEventListener('click', () => {
-    sendData({type:'help'});
-  });
+  const helpBtn = document.getElementById('btn-help');
+  if (helpBtn) {
+    helpBtn.addEventListener('click', () => {
+      sendData({type:'help'});
+    });
+  }
 
   // все кнопки оформления в карточках
   document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
@@ -262,17 +268,30 @@
     sendData({type:'subscribe', tier, plan});
   }
 
-  // Фолбэк: если открыто вне Telegram WebView — редирект в бота на оплату
   function sendData(obj){
     try{
       if (tg && tg.sendData) {
         tg.sendData(JSON.stringify(obj));
+        try { tg.close(); } catch(_) {}
       } else {
-        window.location.href = "https://t.me/gpt5pro_bot?start=subscribe";
+        // fallback: открыто не в Telegram — deeplink в нашего бота
+        if (BOT_USERNAME) {
+          const tier = (obj && obj.tier) || 'pro';
+          const plan = (obj && obj.plan) || 'month';
+          const dl = `https://t.me/${BOT_USERNAME}?start=subscribe_${tier}_${plan}`;
+          location.href = dl;
+        } else {
+          alert('Откройте страницу из Telegram для оформления.');
+        }
       }
     } catch(e){
       console.error(e);
-      window.location.href = "https://t.me/gpt5pro_bot?start=subscribe";
+      if (BOT_USERNAME) {
+        const dl = `https://t.me/${BOT_USERNAME}?start=subscribe`;
+        location.href = dl;
+      } else {
+        alert('Не удалось передать данные в Telegram.');
+      }
     }
   }
 </script>
