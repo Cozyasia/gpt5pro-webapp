@@ -1,219 +1,286 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GPT5PRO — Подписка</title>
-  <meta name="color-scheme" content="dark light">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- ✅ Подключаем внешние файлы (мягко, ничего не ломаем) -->
-  <link rel="stylesheet" href="./premium.css">
-  <script type="module" src="./premium.js"></script>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
   <style>
     :root{
-      --bg:#0f1115; --card:#171a21; --text:#ffffff; --muted:#b3b8c3;
-      --primary:#2ea44f; --primary-2:#238636; --stroke:#272b33; --accent:#7c9fff;
+      --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
+      --accent:#4b8bfd; --accent-2:#7aa0ff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
+      --br:14px;
     }
-    .tg-theme {
-      --bg: var(--tg-theme-bg-color, #0f1115);
-      --text: var(--tg-theme-text-color, #ffffff);
-      --card: var(--tg-theme-secondary-bg-color, #171a21);
-      --muted: var(--tg-theme-hint-color, #b3b8c3);
-      --stroke: var(--tg-theme-section-separator-color, #272b33);
-      --primary: var(--tg-theme-button-color, #2ea44f);
-      --primary-2: color-mix(in oklab, var(--primary) 85%, black);
-      --accent: var(--tg-theme-link-color, #7c9fff);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-      -webkit-font-smoothing:antialiased; line-height:1.45;
-    }
-    .wrap{max-width:880px; margin:0 auto; padding:18px}
-    .hero{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,0));
-      border-radius:16px; padding:18px; display:flex; gap:14px; align-items:center;
-      border:1px solid var(--stroke);
-    }
-    .logo{
-      width:56px; height:56px; border-radius:12px; background:var(--card);
-      display:grid; place-items:center; border:1px solid var(--stroke);
-      font-weight:800; letter-spacing:.5px;
-    }
-    .logo span{font-size:12px; opacity:.8}
-    h1{margin:0 0 4px; font-size:22px}
-    .muted{color:var(--muted)}
-    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; margin-top:16px;}
-    @media (max-width:820px){ .grid{grid-template-columns:1fr} }
-    .card{background:var(--card); border:1px solid var(--stroke); border-radius:16px; padding:18px;}
-    .price{display:flex; align-items:baseline; gap:10px; margin:4px 0 8px;}
-    .price .amount{font-size:28px; font-weight:800}
-    .badge{font-size:12px; padding:6px 10px; border-radius:999px; background:#00000022; border:1px solid var(--stroke);}
-    .features{margin:10px 0 0; padding:0; list-style:none}
-    .features li{margin:8px 0; display:flex; gap:10px; align-items:flex-start}
-    .features li::before{content:"✅"; margin-top:2px}
-    .btn{
-      appearance:none; border:0; background:var(--primary); color:#fff;
-      width:100%; padding:14px 16px; border-radius:12px; font-weight:700; font-size:16px;
-      cursor:pointer; margin-top:12px;
-    }
+    html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
+    a{color:var(--accent);text-decoration:none}
+    .wrap{max-width:980px;margin:0 auto;padding:20px}
+    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(14,17,22,.97),rgba(14,17,22,.75));backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid #1b2436}
+    .head-row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow)}
+    h1{font-size:18px;margin:0}
+    .head-actions{display:flex;gap:8px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 16px;border-radius:11px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer}
+    .btn.secondary{background:#232b3f;color:var(--text);border:1px solid #2b3550}
+    .btn.ghost{background:transparent;border:1px solid #2b3550}
     .btn:active{transform:translateY(1px)}
-    .btn.secondary{background:transparent; color:var(--text); border:1px solid var(--stroke);}
-    details{border:1px solid var(--stroke); border-radius:12px; padding:12px 14px; background:var(--card)}
-    details + details{margin-top:10px}
-    details summary{cursor:pointer; font-weight:600}
-    .row{display:flex; gap:10px}
-    @media (max-width:460px){ .row{flex-direction:column} }
-    .tiny{font-size:12px; color:var(--muted)}
-    a{color:var(--accent); text-decoration:none}
-    .divider{height:1px; background:var(--stroke); margin:14px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:var(--shadow);padding:18px}
+    h2{margin:8px 0 12px 0;font-size:20px}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;background:var(--chip);border:1px solid var(--chip-br);padding:6px 10px;border-radius:999px;font-size:12px;margin:4px 6px 0 0}
+    .list{margin:10px 0 0 0;padding:0 0 0 18px}
+    .hr{height:1px;background:#1b2436;margin:18px 0}
+    .price{font-size:28px;font-weight:800;letter-spacing:.2px}
+    .note{font-size:13px;color:var(--muted)}
+    .tariff-feats{margin:10px 0 0 0;padding:0;list-style:none}
+    .tariff-feats li{margin:8px 0;display:flex;gap:10px}
+    .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+    .chips .chip{background:var(--chip);border:1px solid var(--chip-br);padding:6px 10px;border-radius:999px}
+    .k{font-weight:700}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    footer{opacity:.7;padding:30px 10px;text-align:center;font-size:13px}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
   </style>
 </head>
-<body class="tg-theme">
-  <div class="wrap">
-    <div class="hero">
-      <div class="logo">GPT<span>5 PRO</span></div>
+<body>
+<header>
+  <div class="head-row wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
       <div>
-        <h1>Подписка GPT-5 PRO</h1>
-        <div class="muted">Быстрые ответы, расширенные возможности и приоритетная очередь.</div>
+        <h1>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</h1>
+        <div class="muted" style="font-size:13px">Единый ИИ: пишет, озвучивает, генерирует фото/видео, анализирует документы и медиа</div>
+      </div>
+    </div>
+    <div class="head-actions">
+      <a class="btn secondary" href="#tariffs">Тарифы</a>
+      <button class="btn" id="btn-open-tariff">Оформить подписку</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:18px">
+  <!-- hero -->
+  <div class="card" style="padding:20px">
+    <div class="grid">
+      <div>
+        <h2>Шесть нейросетей — один бот</h2>
+        <p class="muted">
+          Под брендом <span class="k">Neuro-Bot</span> мы объединили лучшие модели:
+          <span class="k">GPT-5</span>, <span class="k">Google Gemini 1.5 Pro</span>,
+          <span class="k">Midjourney</span>, <span class="k">Luma</span>, <span class="k">Runway</span> и <span class="k">Deepgram</span>.
+        </p>
+        <div class="chip-row chips">
+          <div class="chip">Тексты и анализ</div>
+          <div class="chip">Генерация изображений</div>
+          <div class="chip">Видео FullHD / 4K</div>
+          <div class="chip">Распознавание речи</div>
+          <div class="chip">Озвучка ответов</div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn" href="#tariffs">Выбрать тариф</a>
+          <button class="btn ghost" id="btn-help">Задать вопрос</button>
+        </div>
+      </div>
+      <div class="card" style="background:linear-gradient(180deg,#182033,#111626);border-color:#212b46">
+        <h2>Под капотом</h2>
+        <div class="badge">GPT-5</div>
+        <ul class="list">
+          <li>Тексты, сценарии, посты, код</li>
+          <li>Анализ документов, PDF и изображений</li>
+          <li>Озвучка ответов (AI-голос)</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="badge">Google Gemini 1.5 Pro</div>
+        <ul class="list">
+          <li>Анализ длинных документов (до ~1 млн токенов)</li>
+          <li>Работа с таблицами, PDF, изображениями и видео</li>
+          <li>Высокая точность по фактам и технике</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="badge">Midjourney</div>
+        <ul class="list">
+          <li>Фото-реализм, стили от арт до 3D</li>
+          <li>Логотипы, фоны, персонажи</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="badge">Luma</div>
+        <ul class="list">
+          <li>Текст→видео, фото→видео, 3D-движ</li>
+          <li>Ролики для реклам и Reels</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="badge">Runway</div>
+        <ul class="list">
+          <li>Премиум-видео FullHD/4K уровня киностудии</li>
+          <li>Разовая оплата за каждый ролик</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="badge">Deepgram</div>
+        <ul class="list">
+          <li>Распознавание речи и TTS</li>
+          <li>Много языков, быстрая обработка</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- tariffs -->
+  <section id="tariffs" style="margin-top:18px">
+    <h2>Тарифы</h2>
+    <div class="grid">
+      <!-- START -->
+      <div class="card">
+        <div class="badge">START</div>
+        <div class="price" style="margin-top:8px">499 ₽/мес</div>
+        <div class="note">3 мес — 1 299 ₽ • Год — 4 490 ₽</div>
+        <ul class="tariff-feats">
+          <li>• GPT-4o mini + <span class="muted">Gemini (опц.)</span></li>
+          <li>• 100 текстовых запросов/день</li>
+          <li>• 10 изображений/день — <b>SDXL 768px</b> (только стандарт)</li>
+          <li>• 3 видео Luma/мес</li>
+          <li>• 10 минут аудио Deepgram</li>
+          <li>• Без рекламы</li>
+        </ul>
+        <div class="hr"></div>
+        <button class="btn" data-sub="month">Оформить подписку</button>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn ghost" data-sub="quarter">3 месяца</button>
+          <button class="btn ghost" data-sub="year">Год</button>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div class="card">
+        <div class="badge">PRO</div>
+        <div class="price" style="margin-top:8px">999 ₽/мес</div>
+        <div class="note">3 мес — 2 799 ₽ • Год — 8 490 ₽</div>
+        <ul class="tariff-feats">
+          <li>• GPT-5 + Google Gemini 1.5 Pro</li>
+          <li>• Midjourney / Luma — <b>безлимит*</b></li>
+          <li>• Изображения: выбор качества <b>обычное SDXL</b> / <b>высокое</b></li>
+          <li>• Runway — <b>Pay-Per-Use</b></li>
+          <li>• 200 текстовых, 50 изображений/день</li>
+          <li>• 20 видео/мес • 60 мин Deepgram</li>
+          <li>• Озвучка ответов AI-голосом</li>
+        </ul>
+        <div class="hr"></div>
+        <button class="btn" data-sub="month">Оформить подписку</button>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn ghost" data-sub="quarter">3 месяца</button>
+          <button class="btn ghost" data-sub="year">Год</button>
+        </div>
+      </div>
+
+      <!-- ULTIMATE -->
+      <div class="card">
+        <div class="badge">ULTIMATE</div>
+        <div class="price" style="margin-top:8px">1 999 ₽/мес</div>
+        <div class="note">3 мес — 5 490 ₽ • Год — 15 990 ₽</div>
+        <ul class="tariff-feats">
+          <li>• GPT-5 (безлимит) + Gemini 1.5 Pro</li>
+          <li>• Luma, Midjourney, Deepgram — без ограничений</li>
+          <li>• Runway FullHD/4K — оплата по ролику</li>
+          <li>• Визуальный анализ (CV), приоритетная очередь</li>
+          <li>• Доступ к бета-функциям</li>
+        </ul>
+        <div class="hr"></div>
+        <button class="btn" data-sub="month">Оформить подписку</button>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn ghost" data-sub="quarter">3 месяца</button>
+          <button class="btn ghost" data-sub="year">Год</button>
+        </div>
+      </div>
+
+      <!-- Runway one-off -->
+      <div class="card">
+        <div class="badge">Разовая генерация Runway</div>
+        <div class="note">Премиум-качество, студийный уровень • FullHD / 4K</div>
+        <ul class="tariff-feats">
+          <li>🎞 Быстрое — ~10 сек, 720p — 399 ₽</li>
+          <li>🎬 HQ — ~20 сек, FullHD — 699 ₽</li>
+          <li>📽 Премиум — ~30–40 сек, 4K — 999 ₽</li>
+        </ul>
+        <div class="hr"></div>
+        <div class="note">Оплачивается при запуске из чата бота. Списание — с баланса.</div>
+        <div class="chip-row" style="margin-top:8px">
+          <span class="badge">Anti-Validate Rendering</span>
+          <span class="badge">Оптимизация себестоимости</span>
+          <span class="badge">Batch-/Multi-render</span>
+        </div>
       </div>
     </div>
 
-    <div class="grid">
-      <!-- Левая колонка -->
-      <section class="card">
-        <div class="badge">Тариф: Месяц</div>
-        <div class="price">
-          <div class="amount">999&nbsp;₽</div>
-          <div class="muted">за 30 дней</div>
-        </div>
-
-        <ul class="features">
-          <li>Доступ ко всем PRO-функциям бота</li>
-          <li>Приоритетные ответы и стабильная скорость</li>
-          <li>Анализ изображений, голос в текст, ссылки-источники</li>
-          <li>Генерация медиа + расширенные подсказки</li>
-          <li>Поддержка — прямо в Telegram</li>
-        </ul>
-
-        <div class="row">
-          <button id="buy" class="btn">Оформить подписку</button>
-          <button id="status" class="btn secondary">Проверить статус</button>
-        </div>
-
-        <div class="divider"></div>
-        <div class="tiny">
-          Оплата проходит через Telegram Payments (ЮKassa). Нажимая «Оформить подписку», вы открываете
-          счёт в Telegram. После оплаты подписка активируется автоматически.
-        </div>
-      </section>
-
-      <!-- Правая колонка -->
-      <aside class="card">
-        <h3 style="margin:0 0 8px">FAQ</h3>
-
-        <details open>
-          <summary>Что входит в PRO?</summary>
-          <div class="muted" style="margin-top:8px">
-            Все функции бота, отсутствие ограничений уровня «лайт», приоритетная очередь, улучшенные подсказки.
-          </div>
-        </details>
-
-        <details>
-          <summary>Как списываются деньги?</summary>
-          <div class="muted" style="margin-top:8px">
-            Это помесячная подписка на 30 дней. В Telegram инвойс разовый — вы сами продлеваете при желании.
-          </div>
-        </details>
-
-        <details>
-          <summary>Не пришло подтверждение</summary>
-          <div class="muted" style="margin-top:8px">
-            Откройте чат с ботом и введите команду <code>/status</code>. Если оплаты нет — напишите в поддержку.
-          </div>
-        </details>
-
-        <details>
-          <summary>Как связаться с поддержкой?</summary>
-          <div class="muted" style="margin-top:8px">
-            Нажмите «Написать в поддержку» ниже — откроется чат в Telegram.
-          </div>
-        </details>
-
-        <button id="support" class="btn secondary" style="margin-top:12px">Написать в поддержку</button>
-      </aside>
+    <div class="note" style="margin-top:10px">
+      *Безлимит в рамках честного использования и анти-абуз политики. На START — только SDXL (стандарт), на PRO/ULTIMATE доступен выбор качества.
     </div>
+  </section>
 
-    <p class="tiny" style="margin:16px 4px 0">
-      По вопросам оплаты и возвратов — напишите в поддержку. Используя сервис, вы принимаете
-      условия использования. Данные банковских карт не передаются боту.
-    </p>
-  </div>
+  <!-- FAQ / Support -->
+  <section style="margin-top:18px">
+    <h2>FAQ и поддержка</h2>
+    <div class="card">
+      <p><b>Как происходит оплата?</b><br/>
+      Через YooKassa в Telegram. Кнопка «Оформить подписку» открывает счёт прямо в боте.</p>
+      <div class="hr"></div>
+      <p><b>Где указывать e-mail для чека?</b><br/>
+      На форме оплаты Telegram (мы запрашиваем e-mail для отправки чека автоматически).</p>
+      <div class="hr"></div>
+      <p><b>Что такое Anti-Validate Rendering?</b><br/>
+      Мы используем умные пайплайны (batch/multi-render, валидация промптов и даун-/ап-скейл) для снижения себестоимости
+      без потери качества на PRO/ULTIMATE и удержания цены на START.</p>
+      <div class="hr"></div>
+      <p><b>Поддержка</b><br/>
+        Нажмите «Задать вопрос» — откроется чат с ботом и мы ответим.</p>
+    </div>
+  </section>
+</main>
 
-  <script>
-    // Если premium.js уже подключён и инициализировал страницу — не дублируем обработчики.
-    if (!window.__GPT5PRO_PREMIUM_JS_LOADED) {
-      // ==== настройки ====
-      const BOT_USERNAME = 'progpt5_bot';         // при необходимости замени
-      const SUPPORT_USERNAME = 'progpt5_bot';     // сюда поставь аккаунт саппорта
+<footer>
+  © Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini
+</footer>
 
-      const tg = window.Telegram?.WebApp;
+<script>
+  // Telegram WebApp bridge
+  const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  if(tg){ tg.expand(); }
 
-      const inTelegram = () => !!tg?.initDataUnsafe;
+  // «Оформить подписку» в шапке
+  document.getElementById('btn-open-tariff').addEventListener('click', () => {
+    sendSubscribe('month');
+  });
 
-      const deepLink = (start) =>
-        `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(start)}`;
+  // «Задать вопрос»
+  document.getElementById('btn-help').addEventListener('click', () => {
+    sendData({type:'help'});
+  });
 
-      const safeSend = (type, extra = {}) => {
-        // Отправляем web_app_data в бота; если не получилось — fallback по deep-link
-        const payload = JSON.stringify({ type, ...extra });
-        try {
-          tg?.sendData(payload);
-        } catch (e) {
-          // открыли страницу в браузере? Перекинем в чат с ботом
-          window.location.href = deepLink(type);
-        }
-      };
+  // Кнопки на тарифах
+  document.querySelectorAll('[data-sub]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const plan = btn.getAttribute('data-sub'); // month|quarter|year
+      sendSubscribe(plan);
+    });
+  });
 
-      // Инициализация
-      (function init(){
-        if (tg?.ready) {
-          tg.ready();
-          tg.expand();
-          // подтягиваем цвет кнопки из темы
-          if (tg.themeParams?.button_color) {
-            document.documentElement.style.setProperty('--primary', tg.themeParams.button_color);
-          }
-          tg.HapticFeedback?.impactOccurred('light');
-          // уведомляем бота, что открыли тарифы
-          try { tg.sendData(JSON.stringify({ type: 'open_tariff' })); } catch(e){}
-        }
-      })();
-
-      // Кнопки
-      document.getElementById('buy').addEventListener('click', () => {
-        safeSend('subscribe');   // бот пришлёт invoice
-        tg?.close();             // аккуратно сворачиваем мини-приложение
-      });
-
-      document.getElementById('status').addEventListener('click', () => {
-        safeSend('status');      // бот вернёт статус подписки
-        tg?.close();
-      });
-
-      document.getElementById('support').addEventListener('click', () => {
-        // сначала дадим сигнал в бота
-        safeSend('help_from_webapp');
-        // затем — откроем чат саппорта
-        const link = `https://t.me/${SUPPORT_USERNAME}`;
-        if (tg?.openTelegramLink) tg.openTelegramLink(link);
-        else window.location.href = link;
-      });
+  // вспомогательные
+  function sendSubscribe(plan){
+    sendData({type:'subscribe', plan});
+  }
+  function sendData(obj){
+    try{
+      if(tg && tg.sendData){
+        tg.sendData(JSON.stringify(obj));
+      }else{
+        alert('Откройте страницу из Telegram для оформления.');
+      }
+    }catch(e){
+      console.error(e);
+      alert('Не удалось передать данные в Telegram.');
     }
-  </script>
+  }
+</script>
 </body>
 </html>
