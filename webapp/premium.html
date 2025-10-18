@@ -13,35 +13,35 @@
     }
     html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
     a{color:var(--accent);text-decoration:none}
-    .wrap{max-width:980px;margin:0 auto;padding:20px}
-    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(14,17,22,.97),rgba(14,17,22,.75));backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid #1b2436}
-    .head-row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow)}
-    h1{font-size:18px;margin:0}
-    .head-actions{display:flex;gap:8px;align-items:center}
+    .wrap{max-width:980px;margin:0 auto;padding:14px 16px}
+    header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
+    .head-row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 6px;}
+    .brand{display:flex;gap:10px;align-items:center;min-width:0}
+    .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 28px}
+    h1{font-size:15px;line-height:1.2;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
+    .muted-top{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
+    .head-actions{display:flex;gap:6px;align-items:center}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px 16px;border-radius:11px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer}
+      padding:10px 12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
     .btn.secondary{background:#232b3f;color:var(--text);border:1px solid #2b3550}
-    .btn.ghost{background:transparent;border:1px solid #2b3550}
+    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
     .btn:active{transform:translateY(1px)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:var(--shadow);padding:18px}
-    h2{margin:8px 0 12px 0;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:var(--shadow);padding:16px}
+    h2{margin:6px 0 10px 0;font-size:18px}
     .muted{color:var(--muted)}
     .badge{display:inline-block;background:var(--chip);border:1px solid var(--chip-br);padding:6px 10px;border-radius:999px;font-size:12px;margin:4px 6px 0 0}
-    .list{margin:10px 0 0 0;padding:0 0 0 18px}
-    .hr{height:1px;background:#1b2436;margin:18px 0}
-    .price{font-size:28px;font-weight:800;letter-spacing:.2px}
+    .list{margin:8px 0 0 0;padding:0 0 0 18px}
+    .hr{height:1px;background:#1b2436;margin:14px 0}
+    .price{font-size:24px;font-weight:800;letter-spacing:.2px}
     .note{font-size:13px;color:var(--muted)}
-    .tariff-feats{margin:10px 0 0 0;padding:0;list-style:none}
-    .tariff-feats li{margin:8px 0;display:flex;gap:10px}
+    .tariff-feats{margin:8px 0 0 0;padding:0;list-style:none}
+    .tariff-feats li{margin:7px 0;display:flex;gap:10px}
     .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
     .chips .chip{background:var(--chip);border:1px solid var(--chip-br);padding:6px 10px;border-radius:999px}
     .k{font-weight:700}
     @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    footer{opacity:.7;padding:30px 10px;text-align:center;font-size:13px}
-    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+    footer{opacity:.7;padding:24px 10px;text-align:center;font-size:13px}
   </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
       <div class="logo" aria-hidden="true"></div>
       <div>
         <h1>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</h1>
-        <div class="muted" style="font-size:13px">Единый ИИ: пишет, озвучивает, генерирует фото/видео, анализирует документы и медиа</div>
+        <div class="muted-top">Единый ИИ: тексты, озвучка, фото/видео, анализ документов</div>
       </div>
     </div>
     <div class="head-actions">
@@ -61,9 +61,9 @@
   </div>
 </header>
 
-<main class="wrap" style="padding-top:18px">
+<main class="wrap" style="padding-top:10px">
   <!-- hero -->
-  <div class="card" style="padding:20px">
+  <div class="card">
     <div class="grid">
       <div>
         <h2>Шесть нейросетей — один бот</h2>
@@ -79,7 +79,7 @@
           <div class="chip">Распознавание речи</div>
           <div class="chip">Озвучка ответов</div>
         </div>
-        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <a class="btn" href="#tariffs">Выбрать тариф</a>
           <button class="btn ghost" id="btn-help">Задать вопрос</button>
         </div>
@@ -88,53 +88,49 @@
         <h2>Под капотом</h2>
         <div class="badge">GPT-5</div>
         <ul class="list">
-          <li>Тексты, сценарии, посты, код</li>
-          <li>Анализ документов, PDF и изображений</li>
+          <li>Тексты, сценарии, код</li>
+          <li>Анализ PDF/изображений</li>
           <li>Озвучка ответов (AI-голос)</li>
         </ul>
         <div class="hr"></div>
         <div class="badge">Google Gemini 1.5 Pro</div>
         <ul class="list">
-          <li>Анализ длинных документов (до ~1 млн токенов)</li>
-          <li>Работа с таблицами, PDF, изображениями и видео</li>
-          <li>Высокая точность по фактам и технике</li>
+          <li>Длинные документы, видео и таблицы</li>
+          <li>Высокая точность по фактам</li>
         </ul>
         <div class="hr"></div>
         <div class="badge">Midjourney</div>
         <ul class="list">
-          <li>Фото-реализм, стили от арт до 3D</li>
-          <li>Логотипы, фоны, персонажи</li>
+          <li>Фотореализм, стили от арт до 3D</li>
         </ul>
         <div class="hr"></div>
         <div class="badge">Luma</div>
         <ul class="list">
           <li>Текст→видео, фото→видео, 3D-движ</li>
-          <li>Ролики для реклам и Reels</li>
         </ul>
         <div class="hr"></div>
         <div class="badge">Runway</div>
         <ul class="list">
-          <li>Премиум-видео FullHD/4K уровня киностудии</li>
-          <li>Разовая оплата за каждый ролик</li>
+          <li>Премиум-видео FullHD/4K уровня студии</li>
+          <li>Оплата за ролик (Pay-Per-Use)</li>
         </ul>
         <div class="hr"></div>
         <div class="badge">Deepgram</div>
         <ul class="list">
           <li>Распознавание речи и TTS</li>
-          <li>Много языков, быстрая обработка</li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- tariffs -->
-  <section id="tariffs" style="margin-top:18px">
+  <section id="tariffs" style="margin-top:12px">
     <h2>Тарифы</h2>
     <div class="grid">
       <!-- START -->
-      <div class="card">
+      <div class="card" data-tier="start">
         <div class="badge">START</div>
-        <div class="price" style="margin-top:8px">499 ₽/мес</div>
+        <div class="price" style="margin-top:6px">499 ₽/мес</div>
         <div class="note">3 мес — 1 299 ₽ • Год — 4 490 ₽</div>
         <ul class="tariff-feats">
           <li>• GPT-4o mini + <span class="muted">Gemini (опц.)</span></li>
@@ -145,39 +141,39 @@
           <li>• Без рекламы</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn" data-sub="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost" data-sub="quarter">3 месяца</button>
-          <button class="btn ghost" data-sub="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year">Год</button>
         </div>
       </div>
 
       <!-- PRO -->
-      <div class="card">
+      <div class="card" data-tier="pro">
         <div class="badge">PRO</div>
-        <div class="price" style="margin-top:8px">999 ₽/мес</div>
+        <div class="price" style="margin-top:6px">999 ₽/мес</div>
         <div class="note">3 мес — 2 799 ₽ • Год — 8 490 ₽</div>
         <ul class="tariff-feats">
           <li>• GPT-5 + Google Gemini 1.5 Pro</li>
           <li>• Midjourney / Luma — <b>безлимит*</b></li>
-          <li>• Изображения: выбор качества <b>обычное SDXL</b> / <b>высокое</b></li>
+          <li>• Изображения: стандарт SDXL / высокое качество</li>
           <li>• Runway — <b>Pay-Per-Use</b></li>
           <li>• 200 текстовых, 50 изображений/день</li>
           <li>• 20 видео/мес • 60 мин Deepgram</li>
           <li>• Озвучка ответов AI-голосом</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn" data-sub="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost" data-sub="quarter">3 месяца</button>
-          <button class="btn ghost" data-sub="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year">Год</button>
         </div>
       </div>
 
       <!-- ULTIMATE -->
-      <div class="card">
+      <div class="card" data-tier="ultimate">
         <div class="badge">ULTIMATE</div>
-        <div class="price" style="margin-top:8px">1 999 ₽/мес</div>
+        <div class="price" style="margin-top:6px">1 999 ₽/мес</div>
         <div class="note">3 мес — 5 490 ₽ • Год — 15 990 ₽</div>
         <ul class="tariff-feats">
           <li>• GPT-5 (безлимит) + Gemini 1.5 Pro</li>
@@ -187,10 +183,10 @@
           <li>• Доступ к бета-функциям</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn" data-sub="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost" data-sub="quarter">3 месяца</button>
-          <button class="btn ghost" data-sub="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year">Год</button>
         </div>
       </div>
 
@@ -207,33 +203,28 @@
         <div class="note">Оплачивается при запуске из чата бота. Списание — с баланса.</div>
         <div class="chip-row" style="margin-top:8px">
           <span class="badge">Anti-Validate Rendering</span>
+          <span class="badge">Batch/Multi-render</span>
           <span class="badge">Оптимизация себестоимости</span>
-          <span class="badge">Batch-/Multi-render</span>
         </div>
       </div>
     </div>
 
-    <div class="note" style="margin-top:10px">
+    <div class="note" style="margin-top:8px">
       *Безлимит в рамках честного использования и анти-абуз политики. На START — только SDXL (стандарт), на PRO/ULTIMATE доступен выбор качества.
     </div>
   </section>
 
   <!-- FAQ / Support -->
-  <section style="margin-top:18px">
+  <section style="margin-top:12px">
     <h2>FAQ и поддержка</h2>
     <div class="card">
-      <p><b>Как происходит оплата?</b><br/>
-      Через YooKassa в Telegram. Кнопка «Оформить подписку» открывает счёт прямо в боте.</p>
+      <p><b>Оплата:</b> YooKassa в Telegram. «Оформить подписку» открывает счёт в боте.</p>
       <div class="hr"></div>
-      <p><b>Где указывать e-mail для чека?</b><br/>
-      На форме оплаты Telegram (мы запрашиваем e-mail для отправки чека автоматически).</p>
+      <p><b>Чеки:</b> e-mail запрашивается на форме оплаты Telegram (ЮKassa отправит чек).</p>
       <div class="hr"></div>
-      <p><b>Что такое Anti-Validate Rendering?</b><br/>
-      Мы используем умные пайплайны (batch/multi-render, валидация промптов и даун-/ап-скейл) для снижения себестоимости
-      без потери качества на PRO/ULTIMATE и удержания цены на START.</p>
+      <p><b>Anti-Validate Rendering:</b> валидация промптов, batch/multi-render, даун/ап-скейл — держим качество и цену.</p>
       <div class="hr"></div>
-      <p><b>Поддержка</b><br/>
-        Нажмите «Задать вопрос» — откроется чат с ботом и мы ответим.</p>
+      <p><b>Поддержка:</b> нажмите «Задать вопрос» — откроется чат с ботом.</p>
     </div>
   </section>
 </main>
@@ -243,43 +234,36 @@
 </footer>
 
 <script>
-  // Telegram WebApp bridge
   const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
   if(tg){ tg.expand(); }
 
-  // «Оформить подписку» в шапке
   document.getElementById('btn-open-tariff').addEventListener('click', () => {
-    sendSubscribe('month');
+    // дефолт — PRO на месяц
+    sendSubscribe('pro','month');
   });
 
-  // «Задать вопрос»
   document.getElementById('btn-help').addEventListener('click', () => {
     sendData({type:'help'});
   });
 
-  // Кнопки на тарифах
-  document.querySelectorAll('[data-sub]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const plan = btn.getAttribute('data-sub'); // month|quarter|year
-      sendSubscribe(plan);
+  // все кнопки оформления в карточках
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const card = e.target.closest('.card');
+      const tier = card.getAttribute('data-tier'); // start|pro|ultimate
+      const plan = btn.getAttribute('data-plan');  // month|quarter|year
+      sendSubscribe(tier, plan);
     });
   });
 
-  // вспомогательные
-  function sendSubscribe(plan){
-    sendData({type:'subscribe', plan});
+  function sendSubscribe(tier, plan){
+    sendData({type:'subscribe', tier, plan});
   }
   function sendData(obj){
     try{
-      if(tg && tg.sendData){
-        tg.sendData(JSON.stringify(obj));
-      }else{
-        alert('Откройте страницу из Telegram для оформления.');
-      }
-    }catch(e){
-      console.error(e);
-      alert('Не удалось передать данные в Telegram.');
-    }
+      if(tg && tg.sendData){ tg.sendData(JSON.stringify(obj)); }
+      else{ alert('Откройте страницу из Telegram для оформления.'); }
+    }catch(e){ console.error(e); alert('Не удалось передать данные в Telegram.'); }
   }
 </script>
 </body>
