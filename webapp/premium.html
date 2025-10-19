@@ -232,68 +232,53 @@
   © Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram · Gemini
 </footer>
 
-<script>
-  const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  if (tg) { tg.expand(); }
+<<script>
+  const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+  if (tg) tg.expand();
 
-  // username бота берём из query: ?bot=gpt5pro_bot
-  const BOT_USERNAME = new URLSearchParams(location.search).get('bot') || '';
-
-  // Кнопка в шапке могла быть удалена — подключаем обработчик безопасно
-  const topBtn = document.getElementById('btn-open-tariff');
-  if (topBtn) {
-    topBtn.addEventListener('click', () => {
-      sendSubscribe('pro','month');
-    });
-  }
-
-  const helpBtn = document.getElementById('btn-help');
-  if (helpBtn) {
-    helpBtn.addEventListener('click', () => {
-      sendData({type:'help'});
-    });
-  }
-
-  // все кнопки оформления в карточках
-  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const card = e.target.closest('.card');
-      const tier = card.getAttribute('data-tier'); // start|pro|ultimate
-      const plan = btn.getAttribute('data-plan');  // month|quarter|year
-      sendSubscribe(tier, plan);
-    });
-  });
-
-  function sendSubscribe(tier, plan){
-    sendData({type:'subscribe', tier, plan});
-  }
+  // username бота приходит как ?bot=<username>
+  const BOT = new URLSearchParams(location.search).get('bot') || 'gpt5pro_bot';
 
   function sendData(obj){
     try{
-      if (tg && tg.sendData) {
+      if (tg && typeof tg.sendData === 'function') {
         tg.sendData(JSON.stringify(obj));
         try { tg.close(); } catch(_) {}
       } else {
-        // fallback: открыто не в Telegram — deeplink в нашего бота
-        if (BOT_USERNAME) {
-          const tier = (obj && obj.tier) || 'pro';
-          const plan = (obj && obj.plan) || 'month';
-          const dl = `https://t.me/${BOT_USERNAME}?start=subscribe_${tier}_${plan}`;
-          location.href = dl;
-        } else {
-          alert('Откройте страницу из Telegram для оформления.');
-        }
+        // fallback для браузера: глубокая ссылка в чат бота
+        const tier = (obj && obj.tier) || 'pro';
+        const plan = (obj && obj.plan) || 'month';
+        location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
       }
     } catch(e){
       console.error(e);
-      if (BOT_USERNAME) {
-        const dl = `https://t.me/${BOT_USERNAME}?start=subscribe`;
-        location.href = dl;
-      } else {
-        alert('Не удалось передать данные в Telegram.');
-      }
+      alert('Не удалось передать данные. Откройте страницу из Telegram.');
     }
   }
+
+  function sendSubscribe(tier, plan){ sendData({type:'subscribe', tier, plan}); }
+
+  // верхняя синяя кнопка (если она есть)
+  const topBtn = document.getElementById('btn-open-tariff');
+  if (topBtn) topBtn.addEventListener('click', () => sendSubscribe('pro','month'));
+
+  // «Задать вопрос»
+  const helpBtn = document.getElementById('btn-help');
+  if (helpBtn) helpBtn.addEventListener('click', () => {
+    // можно сразу открыть саппорт-чат
+    if (!tg) location.href = 'https://t.me/gpt5pro_support';
+    else tg.sendData(JSON.stringify({type:'help'}));
+  });
+
+  // все синие кнопки «Оформить подписку»
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const card = e.target.closest('.card');
+      const tier = card.getAttribute('data-tier');            // start|pro|ultimate
+      const plan = btn.getAttribute('data-plan') || 'month';  // month|quarter|year
+      sendSubscribe(tier, plan);
+    });
+  });
 </script>
 </body>
 </html>
