@@ -12,22 +12,18 @@
   <style>
     :root{
       --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
-      --accent:#4b8bfd; --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
+      --accent:#4b8bfd; --accent-2:#7aa0ff; --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
       --br:14px;
     }
     html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
     a{color:var(--accent);text-decoration:none}
     .wrap{max-width:980px;margin:0 auto;padding:12px 14px}
     header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
-    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px 6px;}
+    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px}
     .brand{display:flex;gap:8px;align-items:center;min-width:0}
     .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 24px}
     h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
     .muted-top{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:9px 12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
-    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
-    .btn:active{transform:translateY(1px)}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:var(--shadow);padding:16px}
     h2{margin:6px 0 10px 0;font-size:18px}
@@ -41,6 +37,12 @@
     .tariff-feats li{margin:7px 0;display:flex;gap:10px}
     .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
     footer{opacity:.7;padding:20px 10px;text-align:center;font-size:13px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 14px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px
+    }
+    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
   </style>
 </head>
 
@@ -147,79 +149,75 @@
 <footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
 
 <script>
+  // ====== SETTINGS ======
+  // Если по какой-то причине параметр ?bot не пришёл — используем этот запасной username.
+  const DEFAULT_BOT_FALLBACK = 'progpt5_bot'; // ← замени на свой прод-бот (@ без @)
+
+  // ====== Telegram WebApp bootstrap ======
   const tg = window.Telegram?.WebApp;
   tg?.ready();
   tg?.expand();
 
-  // Имя бота берём из query (?bot=...), иначе — ваш прод-бот
-  const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
+  // username бота: ?bot=<username> прилетает из main.py (см. _make_tariff_url)
+  const BOT = new URLSearchParams(location.search).get('bot') || DEFAULT_BOT_FALLBACK;
 
-  // Текущий выбор (для MainButton)
-  let pending = null;
-
-  // Удобные функции для MainButton
-  function showMainButton(text) {
-    if (!tg) return;
-    tg.MainButton.setText(text);
-    tg.MainButton.enable();
-    tg.MainButton.show();
-  }
-  function hideMainButton() {
-    if (!tg) return;
-    tg.MainButton.hide();
-    tg.MainButton.disable();
+  // Проверяем, что мы точно в WebApp (на iOS user может не прилетать, ориентируемся на initData)
+  function inWebApp() {
+    return !!(tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0);
   }
 
-  // Обработчик клика системной кнопки — надёжная доставка web_app_data
-  if (tg) {
-    tg.MainButton.onClick(() => {
-      if (!pending) return;
-      try {
-        tg.HapticFeedback?.impactOccurred?.('medium');
-        tg.MainButton.showProgress();
-        tg.sendData(JSON.stringify(pending));
-        // даём Телеграму гарантированно обработать web_app_data
-        setTimeout(() => { try { tg.close(); } catch(_) {} }, 350);
-      } catch (e) {
-        console.error(e);
-        tg.MainButton.hideProgress();
-      }
-    });
+  function popup(text) {
+    try { tg?.showPopup({title: 'Neuro-Bot', message: text, buttons:[{type:'close'}]}); } catch(_) {}
+  }
+
+  function deeplinkToBot(tier, plan) {
+    const url = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
+    window.location.href = url;
+  }
+
+  function sendSubscribe(tier, plan) {
+    const payload = { type: 'subscribe', tier, plan };
+    if (inWebApp()) {
+      // 1) Отправляем web_app_data
+      tg.sendData(JSON.stringify(payload));
+      // 2) Показать подсказку на случай, если юзер не заметил счёт
+      popup('Запрос отправлен в бота. Счёт придёт в чат.');
+      // 3) И только затем закрываем
+      try { tg.close(); } catch(_) {}
+    } else {
+      // Фолбэк: открываем именно ваш бот
+      deeplinkToBot(tier, plan);
+    }
   }
 
   // Кнопки «Оформить подписку» в карточках
   document.querySelectorAll('.card[data-tier] .sub').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = e.target.closest('.card');
-      const tier = card.getAttribute('data-tier');
+    btn.addEventListener('click', e => {
+      const card = e.currentTarget.closest('.card');
+      const tier = card.getAttribute('data-tier');          // start|pro|ultimate
       const plan = btn.getAttribute('data-plan') || 'month';
-
-      // Если есть контекст чата — готовим MainButton
-      if (tg && tg.initDataUnsafe?.user) {
-        pending = { type: 'subscribe', tier, plan };
-        const labelMap = { start:'START', pro:'PRO', ultimate:'ULTIMATE' };
-        const termMap  = { month:'1 месяц', quarter:'3 месяца', year:'12 месяцев' };
-        showMainButton(`Оформить: ${labelMap[tier] || tier.toUpperCase()} • ${termMap[plan] || plan}`);
-      } else {
-        // Фолбэк для внешнего открытия — диплинк в ваш бот
-        window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
-      }
+      sendSubscribe(tier, plan);
     });
   });
 
-  // Кнопка «Задать вопрос»
+  // Нижняя системная кнопка Telegram (MainButton)
+  // Показываем «Оформить: PRO • 1 месяц» по умолчанию
+  (function setupMainButton(){
+    if (!tg) return;
+    tg.MainButton.setParams({ is_visible: true, text: 'Оформить: PRO • 1 месяц' });
+    tg.onEvent('mainButtonClicked', () => sendSubscribe('pro','month'));
+  })();
+
+  // «Задать вопрос»
   const help = document.getElementById('btn-help');
   if (help) help.onclick = () => {
-    if (tg && tg.initDataUnsafe?.user) {
-      pending = { type:'help' };
-      showMainButton('Открыть чат поддержки');
+    if (inWebApp()) {
+      tg.sendData(JSON.stringify({type:'help'}));
+      try { tg.close(); } catch(_) {}
     } else {
       window.location.href = `https://t.me/${BOT}`;
     }
   };
-
-  // На всякий — прячем кнопку при уходе со страницы/скролле далеко
-  window.addEventListener('pagehide', hideMainButton);
 </script>
 </body>
 </html>
