@@ -12,8 +12,7 @@
   <style>
     :root{
       --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
-      --accent:#4b8bfd; --accent-2:#7aa0ff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
-      --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
+      --accent:#4b8bfd; --accent-2:#7aa0ff; --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
       --br:14px;
     }
     html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
@@ -153,43 +152,49 @@
   tg?.ready();
   tg?.expand();
 
-  // Юзернейм бота приходит как ?bot=..., его бот добавляет из ENV BOT_USERNAME.
-  // В ENV WEBAPP_URL никаких ?bot= быть не должно.
+  // Имя бота: берём из ?bot=..., иначе дефолт — ваш прод-бот
   const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
 
-  // Всегда сначала пробуем отправить web_app_data в чат.
+  // Отправка данных с анти-рейсом закрытия
   function sendData(obj) {
     try {
-      if (tg && typeof tg.sendData === 'function') {
+      const hasChat = !!(tg && tg.initDataUnsafe && tg.initDataUnsafe.user);
+
+      if (hasChat && typeof tg.sendData === 'function') {
+        // 1) отправляем payload в чат бота
         tg.sendData(JSON.stringify(obj));
-        try { tg.close(); } catch(_) {}
+
+        // 2) чуть-чуть ждём, чтобы Telegram точно успел доставить web_app_data
+        setTimeout(() => {
+          try { tg.close(); } catch (_) {}
+        }, 250);
       } else {
-        // Фолбэк только если не внутри Telegram
+        // Фолбэк для открытия извне: корректный диплинк именно в ваш бот
         const tier = obj.tier || 'pro';
         const plan = obj.plan || 'month';
         window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
       }
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       alert('Ошибка при передаче данных. Откройте страницу из Telegram.');
     }
   }
 
-  // Кнопки подписки
-  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
-    btn.addEventListener('click', e=>{
+  // Кнопки «Оформить подписку»
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn => {
+    btn.addEventListener('click', (e) => {
       const card = e.target.closest('.card');
       const tier = card.getAttribute('data-tier');
       const plan = btn.getAttribute('data-plan') || 'month';
-      sendData({type:'subscribe', tier, plan});
+      sendData({ type: 'subscribe', tier, plan });
     });
   });
 
-  // Кнопка "Задать вопрос"
+  // Кнопка «Задать вопрос»
   const help = document.getElementById('btn-help');
   if (help) help.onclick = () => {
-    if (tg && typeof tg.sendData === 'function') {
-      sendData({type:'help'});
+    if (tg && tg.initDataUnsafe?.user) {
+      sendData({ type: 'help' });
     } else {
       window.location.href = `https://t.me/${BOT}`;
     }
