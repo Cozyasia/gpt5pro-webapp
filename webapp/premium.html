@@ -145,54 +145,59 @@
   </section>
 </main>
 
-<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
+<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourourney • Deepgram • Gemini</footer>
 
 <script>
-  // Telegram WebApp bootstrap
+  // ===== Telegram WebApp bootstrap =====
   const tg = window.Telegram?.WebApp;
   tg?.ready();
   tg?.expand();
 
-  // Юзернейм бота приходит как ?bot=..., его бот добавляет из ENV BOT_USERNAME.
-  // В ENV WEBAPP_URL никаких ?bot= быть не должно.
+  // username бота: ?bot=<username> прилетает из бота; держим запасной.
   const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
 
-  // Всегда сначала пробуем отправить web_app_data в чат.
-  function sendData(obj) {
-    try {
-      if (tg && typeof tg.sendData === 'function') {
-        tg.sendData(JSON.stringify(obj));
-        try { tg.close(); } catch(_) {}
-      } else {
-        // Фолбэк только если не внутри Telegram
-        const tier = obj.tier || 'pro';
-        const plan = obj.plan || 'month';
-        window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
-      }
-    } catch(e) {
-      console.error(e);
-      alert('Ошибка при передаче данных. Откройте страницу из Telegram.');
-    }
+  function popup(text) {
+    try { tg?.showPopup({title: 'Neuro-Bot', message: text, buttons:[{type:'close'}]}); } catch(_) {}
   }
 
-  // Кнопки подписки
-  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      const card = e.target.closest('.card');
-      const tier = card.getAttribute('data-tier');
+  // Надёжная отправка в чат с правом записи (актуально для запуска из «Меню»)
+  async function sendToBot(payload) {
+    // Если это Telegram WebApp
+    if (tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0) {
+      try {
+        // Если Mini App запущена не из чата бота — запросим право писать в ЛС
+        if (!tg.initDataUnsafe?.user || !tg.initDataUnsafe?.chat) {
+          try { await tg.requestWriteAccess(); } catch (_) {}
+        }
+        tg.sendData(JSON.stringify(payload));
+        popup('Запрос отправлен в бота. Счёт придёт в чат.');
+        // Небольшая задержка перед закрытием — iOS иногда теряет событие при мгновенном закрытии
+        setTimeout(() => { try { tg.close(); } catch(e) {} }, 350);
+        return;
+      } catch (e) {
+        console.error('sendData failed:', e);
+      }
+    }
+    // Фолбэк вне Telegram — открываем бота с deep-link
+    const tier = payload.tier || 'pro';
+    const plan = payload.plan || 'month';
+    window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
+  }
+
+  // Кнопки «Оформить подписку» в карточках тарифов
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.currentTarget.closest('.card');
+      const tier = card.getAttribute('data-tier');          // start | pro | ultimate
       const plan = btn.getAttribute('data-plan') || 'month';
-      sendData({type:'subscribe', tier, plan});
+      sendToBot({ type: 'subscribe', tier, plan });
     });
   });
 
-  // Кнопка "Задать вопрос"
+  // Кнопка «Задать вопрос»
   const help = document.getElementById('btn-help');
   if (help) help.onclick = () => {
-    if (tg && typeof tg.sendData === 'function') {
-      sendData({type:'help'});
-    } else {
-      window.location.href = `https://t.me/${BOT}`;
-    }
+    sendToBot({ type: 'help' });
   };
 </script>
 </body>
