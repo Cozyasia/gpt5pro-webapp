@@ -146,22 +146,20 @@
   </section>
 </main>
 
-<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
+<footer>© Neuro-Bot · GPT-5 • Luma • Runway · Midjourney • Deepgram • Gemini</footer>
 
 <script>
   // ====== SETTINGS ======
-  // Если по какой-то причине параметр ?bot не пришёл — используем этот запасной username.
-  const DEFAULT_BOT_FALLBACK = 'progpt5_bot'; // ← замени на свой прод-бот (@ без @)
+  const DEFAULT_BOT_FALLBACK = 'progpt5_bot'; // ← заменишь на свой прод-бот без @
 
   // ====== Telegram WebApp bootstrap ======
   const tg = window.Telegram?.WebApp;
   tg?.ready();
   tg?.expand();
 
-  // username бота: ?bot=<username> прилетает из main.py (см. _make_tariff_url)
+  // username бота: ?bot=<username> прилетает из main.py (_make_tariff_url)
   const BOT = new URLSearchParams(location.search).get('bot') || DEFAULT_BOT_FALLBACK;
 
-  // Проверяем, что мы точно в WebApp (на iOS user может не прилетать, ориентируемся на initData)
   function inWebApp() {
     return !!(tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0);
   }
@@ -178,19 +176,16 @@
   function sendSubscribe(tier, plan) {
     const payload = { type: 'subscribe', tier, plan };
     if (inWebApp()) {
-      // 1) Отправляем web_app_data
       tg.sendData(JSON.stringify(payload));
-      // 2) Показать подсказку на случай, если юзер не заметил счёт
       popup('Запрос отправлен в бота. Счёт придёт в чат.');
-      // 3) И только затем закрываем
-      try { tg.close(); } catch(_) {}
+      // лениво закрываем, чтобы invoice успел прилететь
+      setTimeout(() => { try { tg.close(); } catch(_) {} }, 700);
     } else {
-      // Фолбэк: открываем именно ваш бот
       deeplinkToBot(tier, plan);
     }
   }
 
-  // Кнопки «Оформить подписку» в карточках
+  // Кнопки «Оформить подписку»
   document.querySelectorAll('.card[data-tier] .sub').forEach(btn => {
     btn.addEventListener('click', e => {
       const card = e.currentTarget.closest('.card');
@@ -200,8 +195,7 @@
     });
   });
 
-  // Нижняя системная кнопка Telegram (MainButton)
-  // Показываем «Оформить: PRO • 1 месяц» по умолчанию
+  // Нижняя MainButton
   (function setupMainButton(){
     if (!tg) return;
     tg.MainButton.setParams({ is_visible: true, text: 'Оформить: PRO • 1 месяц' });
@@ -213,7 +207,7 @@
   if (help) help.onclick = () => {
     if (inWebApp()) {
       tg.sendData(JSON.stringify({type:'help'}));
-      try { tg.close(); } catch(_) {}
+      setTimeout(() => { try { tg.close(); } catch(_) {} }, 300);
     } else {
       window.location.href = `https://t.me/${BOT}`;
     }
