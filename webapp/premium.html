@@ -12,7 +12,8 @@
   <style>
     :root{
       --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
-      --accent:#4b8bfd; --accent-2:#7aa0ff; --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
+      --accent:#4b8bfd; --accent-2:#7aa0ff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --chip:#1b2233; --chip-br:#2a3550; --shadow:0 6px 24px rgba(0,0,0,.25);
       --br:14px;
     }
     html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
@@ -41,7 +42,6 @@
     .tariff-feats li{margin:7px 0;display:flex;gap:10px}
     .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
     footer{opacity:.7;padding:20px 10px;text-align:center;font-size:13px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 
@@ -112,7 +112,7 @@
           <li>• 10 изображений (768 px)</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
       </div>
 
       <div class="card" data-tier="pro">
@@ -125,7 +125,7 @@
           <li>• 200 запросов, 50 изображений в день</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
       </div>
 
       <div class="card" data-tier="ultimate">
@@ -138,7 +138,7 @@
           <li>• Runway FullHD / 4K (оплата по ролику)</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
+        <button class="btn sub" data-plan="month">Оформить подписку</button>
       </div>
 
     </div>
@@ -153,43 +153,43 @@
   tg?.ready();
   tg?.expand();
 
-  // Бот: берём из query (?bot=), иначе fallback
+  // Юзернейм бота приходит как ?bot=..., его бот добавляет из ENV BOT_USERNAME.
+  // В ENV WEBAPP_URL никаких ?bot= быть не должно.
   const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
 
-  // Мы в «настоящем» WebApp?
-  const canSend = !!(tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0);
-
-  // Универсальная передача подписки:
-  function sendSubscribe(tier, plan) {
-    tier = (tier || 'pro');
-    plan = (plan || 'month');
-
-    if (canSend) {
-      // Отправляем строго web_app_data -> main.py примет и сразу выставит инвойс в чат
-      try { tg.sendData(JSON.stringify({ type: 'subscribe', tier, plan })); } catch (e) {}
-      // Важно: НИЧЕГО не закрываем и не показываем своих попапов — поведение как у кнопки «⭐ Подписка»
-      return;
+  // Всегда сначала пробуем отправить web_app_data в чат.
+  function sendData(obj) {
+    try {
+      if (tg && typeof tg.sendData === 'function') {
+        tg.sendData(JSON.stringify(obj));
+        try { tg.close(); } catch(_) {}
+      } else {
+        // Фолбэк только если не внутри Telegram
+        const tier = obj.tier || 'pro';
+        const plan = obj.plan || 'month';
+        window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
+      }
+    } catch(e) {
+      console.error(e);
+      alert('Ошибка при передаче данных. Откройте страницу из Telegram.');
     }
-
-    // Фолбэк, если открыто во внешнем браузере
-    window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
   }
 
-  // Кнопки «Оформить подписку»
-  document.querySelectorAll('.card[data-tier] .sub').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const card = e.currentTarget.closest('.card');
-      const tier = card?.getAttribute('data-tier') || 'pro';
-      const plan = e.currentTarget.getAttribute('data-plan') || 'month';
-      sendSubscribe(tier, plan);
+  // Кнопки подписки
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const card = e.target.closest('.card');
+      const tier = card.getAttribute('data-tier');
+      const plan = btn.getAttribute('data-plan') || 'month';
+      sendData({type:'subscribe', tier, plan});
     });
   });
 
-  // «Задать вопрос»
+  // Кнопка "Задать вопрос"
   const help = document.getElementById('btn-help');
   if (help) help.onclick = () => {
-    if (canSend) {
-      try { tg.sendData(JSON.stringify({ type: 'help' })); } catch (e) {}
+    if (tg && typeof tg.sendData === 'function') {
+      sendData({type:'help'});
     } else {
       window.location.href = `https://t.me/${BOT}`;
     }
