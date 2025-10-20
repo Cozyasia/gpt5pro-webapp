@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#0e1116" />
   <title>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
 
-  <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -98,7 +97,6 @@
     </div>
   </div>
 
-  <!-- Тарифы -->
   <section id="tariffs" style="margin-top:12px">
     <h2>Тарифы</h2>
     <div class="grid">
@@ -146,72 +144,51 @@
   </section>
 </main>
 
-<footer>© Neuro-Bot · GPT-5 • Luma • Runway · Midjourney • Deepgram • Gemini</footer>
+<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
 
 <script>
-  // ====== SETTINGS ======
-  const DEFAULT_BOT_FALLBACK = 'progpt5_bot'; // ← заменишь на свой прод-бот без @
-
-  // ====== Telegram WebApp bootstrap ======
   const tg = window.Telegram?.WebApp;
   tg?.ready();
   tg?.expand();
 
-  // username бота: ?bot=<username> прилетает из main.py (_make_tariff_url)
+  const DEFAULT_BOT_FALLBACK = 'progpt5_bot';
   const BOT = new URLSearchParams(location.search).get('bot') || DEFAULT_BOT_FALLBACK;
 
-  function inWebApp() {
-    return !!(tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0);
-  }
+  function popup(text){ try{ tg?.showPopup({title:'Neuro-Bot',message:text,buttons:[{type:'close'}]}); }catch(_){} }
 
-  function popup(text) {
-    try { tg?.showPopup({title: 'Neuro-Bot', message: text, buttons:[{type:'close'}]}); } catch(_) {}
-  }
+  function openBotPlain(){ window.location.href = `https://t.me/${BOT}`; }
 
-  function deeplinkToBot(tier, plan) {
-    const url = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
-    window.location.href = url;
-  }
-
-  function sendSubscribe(tier, plan) {
-    const payload = { type: 'subscribe', tier, plan };
-    if (inWebApp()) {
-      tg.sendData(JSON.stringify(payload));
-      popup('Запрос отправлен в бота. Счёт придёт в чат.');
-      // лениво закрываем, чтобы invoice успел прилететь
-      setTimeout(() => { try { tg.close(); } catch(_) {} }, 700);
-    } else {
-      deeplinkToBot(tier, plan);
+  function sendData(obj){
+    try{
+      if (tg && typeof tg.sendData === 'function'){
+        tg.sendData(JSON.stringify(obj));
+        popup('Запрос отправлен в бота. Счёт придёт в чат.');
+        setTimeout(()=>{ try{ tg.close(); }catch(_){ } }, 250);
+      } else {
+        openBotPlain();
+      }
+    }catch(e){
+      openBotPlain();
     }
   }
 
-  // Кнопки «Оформить подписку»
-  document.querySelectorAll('.card[data-tier] .sub').forEach(btn => {
-    btn.addEventListener('click', e => {
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
+    btn.addEventListener('click', e=>{
       const card = e.currentTarget.closest('.card');
-      const tier = card.getAttribute('data-tier');          // start|pro|ultimate
+      const tier = card.getAttribute('data-tier');
       const plan = btn.getAttribute('data-plan') || 'month';
-      sendSubscribe(tier, plan);
+      sendData({type:'subscribe', tier, plan});
     });
   });
 
-  // Нижняя MainButton
-  (function setupMainButton(){
-    if (!tg) return;
-    tg.MainButton.setParams({ is_visible: true, text: 'Оформить: PRO • 1 месяц' });
-    tg.onEvent('mainButtonClicked', () => sendSubscribe('pro','month'));
+  (function mainButton(){
+    if(!tg) return;
+    tg.MainButton.setParams({is_visible:true, text:'Оформить: PRO • 1 месяц'});
+    tg.onEvent('mainButtonClicked', ()=> sendData({type:'subscribe', tier:'pro', plan:'month'}));
   })();
 
-  // «Задать вопрос»
   const help = document.getElementById('btn-help');
-  if (help) help.onclick = () => {
-    if (inWebApp()) {
-      tg.sendData(JSON.stringify({type:'help'}));
-      setTimeout(() => { try { tg.close(); } catch(_) {} }, 300);
-    } else {
-      window.location.href = `https://t.me/${BOT}`;
-    }
-  };
+  if (help) help.onclick = ()=> sendData({type:'help'});
 </script>
 </body>
 </html>
