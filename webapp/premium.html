@@ -153,23 +153,24 @@
   tg?.ready();
   tg?.expand();
 
-  // Правильный бот (дефолт — твой prod-бот)
+  // Юзернейм бота приходит как ?bot=..., его бот добавляет из ENV BOT_USERNAME.
+  // В ENV WEBAPP_URL никаких ?bot= быть не должно.
   const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
 
-  // универсальная передача данных
+  // Всегда сначала пробуем отправить web_app_data в чат.
   function sendData(obj) {
     try {
-      const hasChat = !!(tg && tg.initDataUnsafe && tg.initDataUnsafe.user);
-      if (hasChat && typeof tg.sendData === 'function') {
+      if (tg && typeof tg.sendData === 'function') {
         tg.sendData(JSON.stringify(obj));
         try { tg.close(); } catch(_) {}
       } else {
-        // фолбэк: открываем именно твой бот с корректным start-параметром
+        // Фолбэк только если не внутри Telegram
         const tier = obj.tier || 'pro';
         const plan = obj.plan || 'month';
         window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
       }
     } catch(e) {
+      console.error(e);
       alert('Ошибка при передаче данных. Откройте страницу из Telegram.');
     }
   }
@@ -187,10 +188,11 @@
   // Кнопка "Задать вопрос"
   const help = document.getElementById('btn-help');
   if (help) help.onclick = () => {
-    if (tg && tg.initDataUnsafe?.user)
+    if (tg && typeof tg.sendData === 'function') {
       sendData({type:'help'});
-    else
-      window.location.href = 'https://t.me/progpt5_bot';
+    } else {
+      window.location.href = `https://t.me/${BOT}`;
+    }
   };
 </script>
 </body>
