@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <meta name="theme-color" content="#0e1116" />
   <title>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
       --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
@@ -15,14 +19,12 @@
     html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0;}
     a{color:var(--accent);text-decoration:none}
     .wrap{max-width:980px;margin:0 auto;padding:12px 14px}
-    /* компактная шапка */
     header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
-    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px 6px;} /* ← только бренд, без правых кнопок */
+    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px 6px;}
     .brand{display:flex;gap:8px;align-items:center;min-width:0}
     .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 24px}
     h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
     .muted-top{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
-    .head-actions{display:none} /* ← скрыто мягко, чтобы не ломать стили */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
       padding:9px 12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
     .btn.secondary{background:#232b3f;color:var(--text);border:1px solid #2b3550}
@@ -56,7 +58,6 @@
         <div class="muted-top">Единый ИИ: тексты, озвучка, фото/видео, анализ документов</div>
       </div>
     </div>
-    <!-- head-actions убраны, чтобы шапка не перекрывала контент -->
   </div>
 </header>
 
@@ -80,7 +81,7 @@
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <a class="btn" href="#tariffs">Выбрать тариф</a>
-          <button class="btn ghost" id="btn-help">Задать вопрос</button>
+          <button class="btn ghost" id="btn-help" type="button">Задать вопрос</button>
         </div>
       </div>
       <div class="card" style="background:linear-gradient(180deg,#182033,#111626);border-color:#212b46">
@@ -140,10 +141,10 @@
           <li>• Без рекламы</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
-          <button class="btn ghost sub" data-plan="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter" type="button">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year" type="button">Год</button>
         </div>
       </div>
 
@@ -162,10 +163,10 @@
           <li>• Озвучка ответов AI-голосом</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
-          <button class="btn ghost sub" data-plan="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter" type="button">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year" type="button">Год</button>
         </div>
       </div>
 
@@ -182,10 +183,10 @@
           <li>• Доступ к бета-функциям</li>
         </ul>
         <div class="hr"></div>
-        <button class="btn sub" data-plan="month">Оформить подписку</button>
+        <button class="btn sub" data-plan="month" type="button">Оформить подписку</button>
         <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn ghost sub" data-plan="quarter">3 месяца</button>
-          <button class="btn ghost sub" data-plan="year">Год</button>
+          <button class="btn ghost sub" data-plan="quarter" type="button">3 месяца</button>
+          <button class="btn ghost sub" data-plan="year" type="button">Год</button>
         </div>
       </div>
 
@@ -232,20 +233,23 @@
   © Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram · Gemini
 </footer>
 
-<<script>
-  const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-  if (tg) tg.expand();
+<script>
+  // --- Telegram WebApp init
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
+  tg?.expand();
 
-  // username бота приходит как ?bot=<username>
-  const BOT = new URLSearchParams(location.search).get('bot') || 'gpt5pro_bot';
+  // username бота приходит как ?bot=<username> (бот сам добавляет в URL через ENV BOT_USERNAME)
+  const BOT = new URLSearchParams(location.search).get('bot') || 'progpt5_bot';
 
   function sendData(obj){
     try{
-      if (tg && typeof tg.sendData === 'function') {
-        tg.sendData(JSON.stringify(obj));
-        try { tg.close(); } catch(_) {}
+      const hasChat = !!(tg && tg.initDataUnsafe && tg.initDataUnsafe.user);
+      if (hasChat && typeof tg.sendData === 'function') {
+        tg.sendData(JSON.stringify(obj));   // отправляем payload в бот
+        try { tg.close(); } catch(_) {}     // сворачиваем мини-аппу
       } else {
-        // fallback для браузера: глубокая ссылка в чат бота
+        // нет чата (аппа открыта из каталога) — правильный дип-линк в ваш бот
         const tier = (obj && obj.tier) || 'pro';
         const plan = (obj && obj.plan) || 'month';
         location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
@@ -258,22 +262,19 @@
 
   function sendSubscribe(tier, plan){ sendData({type:'subscribe', tier, plan}); }
 
-  // верхняя синяя кнопка (если она есть)
-  const topBtn = document.getElementById('btn-open-tariff');
-  if (topBtn) topBtn.addEventListener('click', () => sendSubscribe('pro','month'));
-
   // «Задать вопрос»
   const helpBtn = document.getElementById('btn-help');
-  if (helpBtn) helpBtn.addEventListener('click', () => {
-    // можно сразу открыть саппорт-чат
+  if (helpBtn) helpBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     if (!tg) location.href = 'https://t.me/gpt5pro_support';
-    else tg.sendData(JSON.stringify({type:'help'}));
+    else sendData({type:'help'});
   });
 
   // все синие кнопки «Оформить подписку»
   document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
     btn.addEventListener('click', (e)=>{
-      const card = e.target.closest('.card');
+      e.preventDefault();
+      const card = e.currentTarget.closest('.card');
       const tier = card.getAttribute('data-tier');            // start|pro|ultimate
       const plan = btn.getAttribute('data-plan') || 'month';  // month|quarter|year
       sendSubscribe(tier, plan);
