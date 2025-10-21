@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
   <meta name="theme-color" content="#0e1116" />
   <title>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
+
+  <!-- Telegram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
       --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
@@ -16,7 +19,7 @@
     a{color:var(--accent);text-decoration:none}
     .wrap{max-width:980px;margin:0 auto;padding:12px 14px}
     header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
-    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px 6px;}
+    .head-row{display:flex;gap:8px;align-items:center;justify-content:flex-start;padding:6px}
     .brand{display:flex;gap:8px;align-items:center;min-width:0}
     .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 24px}
     h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100vw}
@@ -33,10 +36,12 @@
     .tariff-feats{margin:8px 0 0 0;padding:0;list-style:none}
     .tariff-feats li{margin:7px 0;display:flex;gap:10px}
     .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
-    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
-    .btn.small{padding:7px 10px;font-size:13px}
     footer{opacity:.7;padding:20px 10px;text-align:center;font-size:13px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 14px;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer;font-size:14px}
+    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
+    .btn:active{transform:translateY(1px)}
   </style>
 </head>
 
@@ -143,73 +148,69 @@
 <footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
 
 <script>
-  // Bootstrap
-  const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+  // ====== SETTINGS ======
+  // ФИКС: правильный прод-бот по умолчанию
+  const DEFAULT_BOT_FALLBACK = 'gpt5pro_bot';
 
-  // bot username из query (обязательно передаётся из бота); оставляем ваш рабочий дефолт
-  const qs  = new URLSearchParams(location.search);
-  const BOT = qs.get('bot') || 'progpt5_bot';
-  const SRC = (qs.get('src') || '').toLowerCase();    // 'subscribe' | 'menu' | ''
+  // ====== Telegram WebApp bootstrap ======
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
+  tg?.expand();
 
-  function popup(text){
-    try{ tg?.showPopup({title:'Neuro-Bot', message:text, buttons:[{type:'close'}]}); }catch(_){}
+  // username бота: ?bot=<username> (его добавляет бэкенд)
+  const qs = new URLSearchParams(location.search);
+  const BOT = (qs.get('bot') || DEFAULT_BOT_FALLBACK).replace(/^@/,'');
+  // источник открытия страницы: subscribe|menu
+  const SRC = (qs.get('src') || '').toLowerCase() || 'menu';
+
+  function inWebApp(){
+    return !!(tg && typeof tg.sendData==='function' && typeof tg.initData==='string' && tg.initData.length>0);
   }
 
-  // Надёжная отправка в чат (для src=subscribe)
-  async function sendToBot(payload){
-    if (tg && typeof tg.sendData === 'function' && typeof tg.initData === 'string' && tg.initData.length > 0){
-      try{
-        // из меню может не быть контекста чата — запрашиваем доступ на запись
-        if (!tg.initDataUnsafe?.chat){ try{ await tg.requestWriteAccess(); }catch(_){ } }
-        tg.sendData(JSON.stringify(payload));
-        popup('Запрос отправлен в бота. Счёт придёт в чат.');
-        setTimeout(()=>{ try{ tg.close(); }catch(_){} }, 350);
-        return;
-      }catch(e){ console.error('sendData failed', e); }
+  function popup(m){ try{ tg?.showPopup({title:'Neuro-Bot', message:m, buttons:[{type:'close'}]}); }catch(_){} }
+
+  function deeplinkToBot(tier, plan){
+    // открываем именно ваш бот (НИКАКИХ dev-ботов)
+    const url = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
+    try { tg?.openTelegramLink ? tg.openTelegramLink(url) : (location.href=url); }
+    catch(_) { location.href = url; }
+  }
+
+  function sendSubscribe(tier, plan){
+    // ДВА РЕЖИМА:
+    // 1) SRC=subscribe + есть WebApp → отправляем web_app_data (инвойс сразу в чат)
+    // 2) SRC=menu или нет WebApp → открываем deeplink /start subscribe_<...>
+    if (SRC === 'subscribe' && inWebApp()){
+      tg.sendData(JSON.stringify({type:'subscribe', tier, plan}));
+      popup('Запрос отправлен в бота. Счёт придёт в чат.');
+      try{ tg.close(); }catch(_){}
+    } else {
+      deeplinkToBot(tier, plan);
     }
-    // Фолбэк вне Telegram
-    const tier = payload.tier || 'pro';
-    const plan = payload.plan || 'month';
-    window.location.href = `https://t.me/${BOT}?start=subscribe_${tier}_${plan}`;
   }
 
   // Кнопки «Оформить подписку»
-  const payButtons = document.querySelectorAll('.card[data-tier] .sub');
-
-  if (SRC === 'menu'){
-    // Режим: открыто из «Меню». Оплату через мини-аппу отключаем.
-    payButtons.forEach(btn => {
-      btn.classList.add('ghost','small');
-      btn.textContent = 'Открыть оплату в боте';
-      btn.onclick = () => {
-        if (tg?.openTelegramLink) tg.openTelegramLink(`https://t.me/${BOT}`);
-        else window.location.href = `https://t.me/${BOT}`;
-      };
+  document.querySelectorAll('.card[data-tier] .sub').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const card = e.currentTarget.closest('.card');
+      const tier = card.getAttribute('data-tier');       // start|pro|ultimate
+      const plan = btn.getAttribute('data-plan') || 'month';
+      sendSubscribe(tier, plan);
     });
-  } else {
-    // Режим: открыто из «⭐ Подписка» (или по прямой ссылке) — отправляем payload → счёт
-    payButtons.forEach(btn => {
-      btn.onclick = (e) => {
-        const card = e.currentTarget.closest('.card');
-        const tier = card.getAttribute('data-tier');          // start|pro|ultimate
-        const plan = btn.getAttribute('data-plan') || 'month';
-        sendToBot({ type:'subscribe', tier, plan });
-      };
-    });
-  }
+  });
 
   // «Задать вопрос»
   const help = document.getElementById('btn-help');
-  if (help){
-    help.onclick = () => {
-      if (SRC === 'menu'){
-        if (tg?.openTelegramLink) tg.openTelegramLink(`https://t.me/${BOT}`);
-        else window.location.href = `https://t.me/${BOT}`;
-      } else {
-        sendToBot({type:'help'});
-      }
-    };
-  }
+  if (help) help.onclick = ()=>{
+    if (inWebApp()){
+      tg.sendData(JSON.stringify({type:'help'}));
+      try{ tg.close(); }catch(_){}
+    } else {
+      const url = `https://t.me/${BOT}`;
+      try { tg?.openTelegramLink ? tg.openTelegramLink(url) : (location.href=url); }
+      catch(_) { location.href = url; }
+    }
+  };
 </script>
 </body>
 </html>
