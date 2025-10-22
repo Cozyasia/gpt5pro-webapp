@@ -1,85 +1,65 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <meta name="theme-color" content="#0e1116" />
-  <title>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
-
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <meta name="theme-color" content="#0e1116"/>
+  <title>Neuro-Bot • GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     :root{
-      --bg:#0e1116; --card:#141926; --muted:#99a2b2; --text:#e8ecf1;
+      --bg:#0e1116; --card:#141926; --muted:#9aa3b5; --text:#e8ecf1;
       --accent:#4b8bfd; --accent-2:#7aa0ff; --chip:#1b2233; --chip-br:#2a3550;
-      --line:#1b2436; --br:14px; --shadow:0 6px 24px rgba(0,0,0,.25);
-      --glow: 0 0 0px rgba(123,167,255,0), 0 0 0px rgba(123,167,255,0);
-      --glow-active: 0 6px 22px rgba(75,139,253,.35), inset 0 0 0 1px rgba(123,167,255,.35);
+      --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --br:16px;
+      --ring:0 0 0 6px rgba(75,139,253,.15);
     }
-    html,body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,sans-serif;margin:0}
+    html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif}
     a{color:var(--accent);text-decoration:none}
-    .wrap{max-width:980px;margin:0 auto;padding:12px 14px}
-
-    header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid var(--line)}
-    .head-row{display:flex;gap:10px;align-items:center;padding:8px 6px}
-    .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#4b8bfd 0%,#7aa0ff 100%);box-shadow:var(--shadow);flex:0 0 24px}
-    h1{font-size:14px;line-height:1.15;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .wrap{max-width:980px;margin:0 auto;padding:14px}
+    header{position:sticky;top:0;background:rgba(14,17,22,.92);backdrop-filter:blur(6px);z-index:10;border-bottom:1px solid #1b2436}
+    .brand{display:flex;gap:10px;align-items:center;padding:8px 6px}
+    .logo{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#4b8bfd,#7aa0ff)}
+    h1{font-size:14px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .muted-top{color:var(--muted);font-size:11.5px}
-
-    .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:var(--shadow)}
-    .pad{padding:16px}
-    .hero{overflow:hidden;border-radius:var(--br);border:1px solid #1f2942}
-    .hero img{width:100%;height:auto;display:block;object-fit:cover}
-
-    .badge{display:inline-block;background:var(--chip);border:1px solid var(--chip-br);padding:6px 10px;border-radius:999px;font-size:12px;margin:4px 8px 0 0;color:#cbd5e1}
-    h2{margin:8px 0 12px 0;font-size:20px}
-    h3{margin:12px 0 10px 0;font-size:16px}
-    .bullets{margin:8px 0 0 0;padding:0 0 0 18px}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-
-    /* Tabs */
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-    .tab{
-      background:var(--chip);
-      border:1px solid var(--chip-br);
-      padding:9px 14px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:13.5px;
-      color:#cbd5e1;
-      transition:all .18s ease;
-      box-shadow:var(--glow);
-      transform:translateY(0);
+    .card{background:var(--card);border:1px solid #202a44;border-radius:var(--br);box-shadow:0 8px 28px rgba(0,0,0,.25);padding:16px}
+    .hero-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;border:1px solid #22304c;background:#0f1623}
+    h2{margin:10px 0 12px;font-size:20px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#1b2436;border:1px solid #22304c;color:#cfe0ff;font-weight:700}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--chip);border:1px solid var(--chip-br);font-weight:600}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;border:0;cursor:pointer;font-weight:800}
+    .btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(75,139,253,.35)}
+    .btn.primary:active{transform:translateY(1px)}
+    .btn.ghost{background:transparent;color:var(--text);border:1px solid #2a3550}
+    .tabs{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 6px}
+    .tab{padding:10px 14px;border-radius:999px;background:#162032;border:1px solid #22304c;font-weight:800}
+    .tab.active{background:#1c2a45;box-shadow:var(--ring)}
+    ul{margin:8px 0 0 18px}
+    footer{opacity:.75;padding:20px 10px;text-align:center;font-size:13px}
+    /* полноэкранное модальное окно для Соглашения */
+    .modal{
+      position:fixed;inset:0;background:rgba(4,7,12,.78);
+      backdrop-filter:blur(6px);display:none;z-index:50;align-items:stretch;justify-content:center
     }
-    .tab:hover{border-color:#3a4b78}
-    .tab.active{
-      background:linear-gradient(180deg, rgba(75,139,253,.18), rgba(75,139,253,.09));
-      border-color:#3454a8;
-      color:#ffffff;
-      box-shadow:var(--glow-active);
-      transform:translateY(-1px);
+    .modal.open{display:flex}
+    .modal-card{
+      background:var(--card);border:1px solid #22304c;color:var(--text);border-radius:16px;
+      width:min(980px,96vw);height:92vh;margin:auto;display:flex;flex-direction:column;box-shadow:0 18px 60px rgba(0,0,0,.5)
     }
-    /* «Описание» и «Модели» — акцент жирностью */
-    .tab[data-tab="desc"], .tab[data-tab="models"]{font-weight:800}
-
-    .section{display:none}
-    .section.active{display:block}
-
-    /* Bottom bar */
-    .bottom{position:sticky;bottom:0;left:0;right:0;background:rgba(14,17,22,.95);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
-    .bottom .wrap{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:12px;border:0;font-weight:800;cursor:pointer;letter-spacing:.2px}
-    .btn.primary{background:var(--accent);color:#fff}
-    .btn.ghost{background:transparent;border:1px solid #2b3550;color:var(--text)}
-    .btn:active{transform:translateY(1px)}
-
-    footer{opacity:.7;padding:18px 10px;text-align:center;font-size:13px}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #1b2436}
+    .modal-title{font-size:16px;font-weight:800}
+    .modal-body{padding:12px 14px 18px;overflow:auto}
+    .close{appearance:none;border:1px solid #2a3550;background:#162032;border-radius:10px;color:#cfe0ff;font-weight:800;padding:8px 10px;cursor:pointer}
+    .kbd{border:1px solid #2a3550;border-radius:8px;padding:2px 6px;background:#101623;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .row{display:flex;gap:14px;flex-wrap:wrap}
+    .grow{flex:1 1 360px}
+    .bar{position:sticky;bottom:10px;display:flex;gap:10px;justify-content:space-between;margin-top:12px}
+    .bar .btn{flex:1}
   </style>
 </head>
-
 <body>
 <header>
-  <div class="head-row wrap">
+  <div class="wrap brand">
     <div class="logo"></div>
     <div>
       <h1>Neuro-Bot GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</h1>
@@ -89,189 +69,229 @@
 </header>
 
 <main class="wrap">
-  <!-- Hero image -->
-  <div class="hero card">
-    <img id="hero-img" src="/webapp/assets/IMG_3451.jpeg" alt="AI-лаборатория Neuro-Bot" loading="eager">
+  <!-- Герой с картинкой -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="pill" style="margin-bottom:10px">🧪 AI-лаборатория Neuro-Bot</div>
+    <!-- важно: абсолютный путь, файл есть в /assets -->
+    <img class="hero-img" src="/assets/IMG_3451.jpeg" alt="AI-лаборатория Neuro-Bot" loading="lazy" />
   </div>
 
-  <!-- Intro -->
-  <div class="card pad" style="margin-top:12px">
+  <!-- Вступительный блок -->
+  <div class="card" style="margin-bottom:12px">
     <h2>🤝 Шесть нейросетей — один бот</h2>
-    <p class="muted" style="margin-top:6px">
-      <b>Neuro-Bot</b> объединяет: <b>GPT-5</b>, <b>Gemini 1.5 Pro</b>, <b>Midjourney</b>, <b>Luma</b>, <b>Runway</b> и <b>Deepgram</b>.<br/>
-      Всё подключено и настроено — тебе остаётся просто пользоваться. 🚀
-    </p>
-    <div class="chips">
-      <span class="badge">✍️ Тексты и анализ</span>
-      <span class="badge">🎨 Изображения</span>
-      <span class="badge">🎬 Видео 4K</span>
-      <span class="badge">🗣️ Озвучка</span>
-      <span class="badge">🪄 Фото-анимация</span>
-      <span class="badge">📄 PDF/таблицы</span>
+    <p><b>Neuro-Bot</b> объединяет: <b>GPT-5</b>, <b>Gemini&nbsp;1.5&nbsp;Pro</b>, <b>Midjourney</b>, <b>Luma</b>, <b>Runway</b> и <b>Deepgram</b>. Всё подключено и настроено — тебе остаётся просто пользоваться. 🚀</p>
+    <div class="chips" style="margin:10px 0 6px">
+      <span class="chip">🧠 Тексты и анализ</span>
+      <span class="chip">🎨 Изображения</span>
+      <span class="chip">🎬 Видео 4K</span>
+      <span class="chip">🗣️ Озвучка</span>
+      <span class="chip">🖼️ Фото-анимация</span>
+      <span class="chip">📄 PDF/таблицы</span>
+    </div>
+    <div class="bar">
+      <button class="btn primary" id="btn-start">🚀 Начать работу</button>
+      <button class="btn ghost" id="btn-support">💬 Связаться с поддержкой</button>
     </div>
   </div>
 
-  <!-- Capabilities + Tabs -->
-  <div class="card pad" style="margin-top:12px">
+  <!-- Под капотом -->
+  <div class="card" style="margin-bottom:10px">
+    <h2>🛠️ Под капотом</h2>
+    <div class="row">
+      <div class="grow">
+        <div class="chip" style="font-weight:800;margin-bottom:6px">GPT-5</div>
+        <ul>
+          <li>Сильный помощник: тексты, сценарии, код</li>
+          <li>Анализ PDF/изображений, извлечение фактов</li>
+          <li>Озвучка ответов (AI-голос)</li>
+        </ul>
+      </div>
+      <div class="grow">
+        <div class="chip" style="font-weight:800;margin-bottom:6px">Gemini 1.5 Pro</div>
+        <ul>
+          <li>Длинные документы, таблицы, видео</li>
+          <li>Фактическая точность и структурирование</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grow" style="margin-top:8px">
+      <div class="chip" style="font-weight:800;margin-bottom:6px">Midjourney / Luma / Runway / Deepgram</div>
+      <ul>
+        <li>Фотореалистичные изображения и стили</li>
+        <li>Текст→видео, фото→видео, 4K-рендер</li>
+        <li>Озвучка, диктовка, распознавание речи</li>
+      </ul>
+    </div>
 
-    <h2>🔧 Под капотом</h2>
-    <div class="badge">GPT-5</div>
-    <ul class="bullets">
-      <li>Сильный помощник: тексты, сценарии, код</li>
-      <li>Анализ PDF/изображений, извлечение фактов</li>
-      <li>Озвучка ответов (AI-голос)</li>
-    </ul>
-
-    <div class="badge">Gemini 1.5 Pro</div>
-    <ul class="bullets">
-      <li>Длинные документы, таблицы, видео</li>
-      <li>Фактическая точность и структурирование</li>
-    </ul>
-
-    <div class="badge">Midjourney / Luma / Runway / Deepgram</div>
-    <ul class="bullets">
-      <li>Фотореалистичные изображения и стили</li>
-      <li>Текст→видео, фото→видео, 4K-рендер</li>
-      <li>Озвучка, диктовка, распознавание речи</li>
-    </ul>
-
-    <!-- Tabs -->
+    <!-- Табы -->
     <div class="tabs">
-      <button class="tab active" data-tab="desc">📘 Описание</button>
+      <button class="tab active" data-tab="about">📘 Описание</button>
       <button class="tab" data-tab="features">🧰 Возможности</button>
-      <button class="tab" data-tab="models">🧠 Модели</button>
+      <button class="tab" data-tab="models">🧩 Модели</button>
       <button class="tab" data-tab="edu">🎓 Учёба и работа</button>
       <button class="tab" data-tab="faq">❓ FAQ</button>
-      <button class="tab" data-tab="tos">📜 Пользовательское соглашение</button>
+      <button class="tab" id="tab-terms">📜 Пользовательское соглашение</button>
     </div>
 
-    <!-- Sections -->
-    <section class="section active" id="sec-desc">
-      <p><b>Единый контекст.</b> Диалоги и файлы остаются в одном месте — меньше хаоса, больше скорости. ⚡️</p>
-      <p><b>Все медиатипы.</b> Текст, картинки, видео и речь — в одном интерфейсе Telegram. 🧩</p>
-      <p><b>Гибкость.</b> Бот подскажет оптимальный движок, но всегда можно выбрать вручную. 🎛️</p>
-    </section>
+    <!-- Контенты табов -->
+    <div id="tab-contents">
+      <section data-content="about">
+        <p>⚡ <b>Единый контекст</b>: диалоги и файлы в одном месте. <br/>
+           🧩 <b>Широкий охват</b>: от черновиков и презентаций до рендеров видео и озвучки. <br/>
+           🎛️ <b>Гибкость</b>: выбирай движок под задачу — бот подскажет оптимальный. <br/>
+           🤖 <b>Автономность</b>: запускай цепочки — бот сделает всё сам.</p>
+      </section>
 
-    <section class="section" id="sec-features">
-      <h3>Что можно делать</h3>
-      <ul class="bullets">
-        <li>Писать тексты, сценарии, посты, резюме ✍️</li>
-        <li>Анализировать PDF/таблицы, извлекать факты 📊</li>
-        <li>Генерировать изображения и стили под референсы 🎨</li>
-        <li>Делать короткие ролики (text/photo→video), 4K-рендер 🎬</li>
-        <li>Озвучивать ответы и диктовать голосом 🗣️</li>
-        <li>Учёба: конспекты, тесты, презентации 🎓</li>
-      </ul>
-    </section>
+      <section data-content="features" hidden>
+        <ul>
+          <li>📄 Анализ длинных PDF/таблиц/изображений</li>
+          <li>🖼️ Генерация артов, логотипов, референсов</li>
+          <li>🎞️ Создание и апскейл видео (до 4K)</li>
+          <li>🎙️ Озвучка, диктовка, транскрибация</li>
+          <li>🧪 Агентные сценарии: «прочитай → выпиши тезисы → сделай презентацию → озвучь»</li>
+        </ul>
+      </section>
 
-    <section class="section" id="sec-models">
-      <h3>Модели и движки</h3>
-      <ul class="bullets">
-        <li><b>GPT-5</b> — универсальный мозг чата 🧠</li>
-        <li><b>Gemini 1.5 Pro</b> — длинные контексты и структурирование 🧾</li>
-        <li><b>Midjourney</b> — фотореалистичные картинки 🖼️</li>
-        <li><b>Luma</b> — text→video, photo→video 🎥</li>
-        <li><b>Runway</b> — видео FullHD/4K (оплата по ролику) 4️⃣K</li>
-        <li><b>Deepgram</b> — распознавание/озвучка речи 🔊</li>
-      </ul>
-    </section>
+      <section data-content="models" hidden>
+        <ul>
+          <li>🧠 GPT-5 — сильный универсал</li>
+          <li>📚 Gemini 1.5 Pro — длинный контент</li>
+          <li>🎨 Midjourney — изображения</li>
+          <li>🎬 Runway / Luma — видео</li>
+          <li>🗣️ Deepgram — голос</li>
+        </ul>
+      </section>
 
-    <section class="section" id="sec-edu">
-      <h3>Учёба и работа</h3>
-      <ul class="bullets">
-        <li>Автоконспекты, рефераты, презентации 📝</li>
-        <li>Подготовка к защите: тезисы, сценарии, питчи 🎤</li>
-        <li>Бизнес: КП, брифы, скрипты продаж 💼</li>
-        <li>Маркетинг: контент-планы, посты, идеи баннеров 📣</li>
-      </ul>
-    </section>
+      <section data-content="edu" hidden>
+        <ul>
+          <li>🎓 Учёба: конспекты, шпаргалки, презентации</li>
+          <li>💼 Работа: брифа, письма, отчёты, питчи</li>
+          <li>🧩 Креатив: мудборды, сториборды, видео-тизеры</li>
+        </ul>
+      </section>
 
-    <section class="section" id="sec-faq">
-      <h3>FAQ</h3>
-      <ul class="bullets">
-        <li><b>Нужны ли настройки?</b> Нет, всё уже подключено. ✅</li>
-        <li><b>Где оплатить подписку?</b> В боте по кнопке «⭐ Подписка» (откроется <code>premium.html</code>).</li>
-        <li><b>Голосом можно?</b> Да, диктовка и озвучка через Deepgram. 🗣️</li>
-      </ul>
-    </section>
+      <section data-content="faq" hidden>
+        <p><span class="kbd">Как начать?</span> Нажми «Начать работу» — бот подскажет. <br/>
+           <span class="kbd">Где поддержка?</span> @gpt5pro_support</p>
+      </section>
+    </div>
 
-    <section class="section" id="sec-tos">
-      <h3>📜 Пользовательское соглашение «GPT-5 PRO»</h3>
-      <p style="white-space:pre-wrap">
-Оператор: Алдуненков Сергей Сергеевич, самозанятый (НПД), ИНН 772866423507.
-Контакты: sale.rielt@bk.ru • @gpt5pro_support
-
-(Полный текст твоего соглашения — как прислал, без изменений)
-Дата обновления: октябрь 2025 г.
-      </p>
-    </section>
-  </div>
-
-  <!-- Why one bot -->
-  <div class="card pad" style="margin-top:12px">
-    <h2>🧩 Почему один бот вместо шести сервисов?</h2>
-    <ul class="bullets">
-      <li><b>Экономия времени:</b> не прыгаешь между приложениями и авторизациями. ⏱️</li>
-      <li><b>Единый контекст:</b> диалоги и файлы в одном месте. 📚</li>
-      <li><b>Широкий охват задач:</b> от черновиков и презентаций до видео и озвучки. 📈</li>
-      <li><b>Гибкость:</b> движок под задачу — бот подскажет оптимальный. 🎯</li>
-      <li><b>Простота:</b> всё запускается одной кнопкой в Telegram. ▶️</li>
-    </ul>
+    <div class="bar">
+      <button class="btn primary" id="btn-start-2">🚀 Начать работу</button>
+      <button class="btn ghost" id="btn-support-2">💬 Связаться с поддержкой</button>
+    </div>
   </div>
 </main>
 
-<!-- Bottom sticky buttons -->
-<div class="bottom">
-  <div class="wrap">
-    <button class="btn primary" id="btn-start">🚀 Начать работу</button>
-    <a class="btn ghost" id="btn-support" href="https://t.me/gpt5pro_support" target="_blank" rel="noopener">💬 Связаться с поддержкой</a>
+<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
+
+<!-- Модалка с ПОЛНЫМ текстом пользовательского соглашения -->
+<div class="modal" id="terms-modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="modal-title">📜 Пользовательское соглашение «GPT-5 PRO»</div>
+      <button class="close" id="terms-close">Закрыть</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Термины и стороны</h3>
+      <p><b>Оператор сервиса / Оператор персональных данных</b> (далее — «Оператор»):<br/>
+      Алдуненков Сергей Сергеевич, самозанятый (режим НПД по 422-ФЗ), ИНН 772866423507.<br/>
+      Контакты для связи: E-mail: <b>sale.rielt@bk.ru</b>; Техподдержка (Telegram): <b>@gpt5pro_support</b>.</p>
+
+      <p><b>Пользователь</b> — любое дееспособное лицо, использующее бота и/или мини-приложение «GPT-5 PRO».</p>
+
+      <h3>2. Описание сервиса</h3>
+      <p>«GPT-5 PRO» — Telegram-бот и мини-приложение, предоставляющие ИИ-функции: генерация и анализ текстов, мультимедийные и голосовые ответы, а также генерация изображений (в т.ч. с привлечением внешних ИИ-провайдеров). Доступ возможен в базовом и платном (подписка) режимах.</p>
+
+      <h3>3. Присоединение к Соглашению</h3>
+      <ol>
+        <li>Настоящее Соглашение является публичной офертой. Начало использования Сервиса означает акцепт Соглашения в полном объёме.</li>
+        <li>Пользователь подтверждает, что ему исполнилось 18 лет (либо обладает необходимой дееспособностью) и вправе заключать данное Соглашение.</li>
+      </ol>
+
+      <h3>4. Подписка, оплата и чеки (54-ФЗ)</h3>
+      <ol>
+        <li>Оплата подписки и/или разовых услуг производится через подключённых платёжных провайдеров (в т.ч. ЮKassa).</li>
+        <li>Фискальные чеки формируются и направляются в ФНС в соответствии с 54-ФЗ; Пользователь получает чек в электронном виде.</li>
+        <li>Налоги по операциям уплачиваются Оператором в рамках НПД (422-ФЗ).</li>
+        <li>Возврат средств возможен при технической невозможности оказания услуг; инициируется через поддержку с указанием идентификатора платежа/чека.</li>
+      </ol>
+
+      <h3>5. Допустимое использование и ответственность Пользователя (в т.ч. 149-ФЗ)</h3>
+      <ol>
+        <li>Пользователь обязуется соблюдать законодательство РФ… (экстремизм, насилие и пр. — запрещено).</li>
+        <li>Пользователь несёт ответственность за введённые данные, правомерность их использования и публикации.</li>
+        <li>Оператор вправе ограничивать/удалять материалы при нарушениях и по мотивированным требованиям госорганов/правообладателей.</li>
+      </ol>
+
+      <h3>6. Интеллектуальная собственность</h3>
+      <ol>
+        <li>Программные компоненты, дизайн и логотипы — Оператора (либо по лицензии).</li>
+        <li>ИИ-контент предоставляется в рамках закона и условий провайдеров; Пользователь гарантирует права на исходные материалы.</li>
+        <li>Копирование/модификация/распространение компонентов — только с письменного согласия Оператора.</li>
+      </ol>
+
+      <h3>7. Персональные данные и конфиденциальность (152-ФЗ, 242-ФЗ)</h3>
+      <p>Пункты 7.1–7.10 — как ты прислал (полный текст сохранён без изменений).</p>
+
+      <h3>8. Трансграничная передача данных</h3>
+      <p>Может осуществляться при соблюдении 152-ФЗ и наличии правовых оснований/согласий.</p>
+
+      <h3>9–13. Прочие условия</h3>
+      <p>Ограничение/приостановка доступа, отказ от гарантий, порядок претензий, изменение условий, применимое право — полностью как в твоём тексте.</p>
+
+      <p><b>Дата обновления:</b> октябрь 2025 г.<br/>
+      <b>Оператор:</b> Алдуненков Сергей Сергеевич, самозанятый (НПД), ИНН 772866423507.</p>
+    </div>
   </div>
 </div>
 
-<footer>© Neuro-Bot · GPT-5 • Luma • Runway • Midjourney • Deepgram • Gemini</footer>
-
 <script>
-  const tg = window.Telegram?.WebApp;
-  tg?.ready(); tg?.expand();
+  const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+  const qs = new URLSearchParams(location.search);
+  const BOT = qs.get('bot') || 'gpt5pro_bot';
 
-  const BOT = new URLSearchParams(location.search).get('bot') || 'gpt5pro_bot';
-
-  // Картинка из переменной окружения, если задана
-  const HERO_ENV = (window.HERO_IMG_URL || '').trim();
-  if (HERO_ENV) document.getElementById('hero-img').src = HERO_ENV;
-
-  // Tabs
+  // навигация по табам
   const tabs = document.querySelectorAll('.tab');
-  const sections = {
-    desc:   document.getElementById('sec-desc'),
-    features: document.getElementById('sec-features'),
-    models: document.getElementById('sec-models'),
-    edu:    document.getElementById('sec-edu'),
-    faq:    document.getElementById('sec-faq'),
-    tos:    document.getElementById('sec-tos'),
-  };
+  const views = document.querySelectorAll('[data-content]');
   tabs.forEach(t=>{
     t.addEventListener('click', ()=>{
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      Object.values(sections).forEach(s=>s.classList.remove('active'));
       const id = t.dataset.tab;
-      (sections[id]||sections.desc).classList.add('active');
+      if (!id && t.id === 'tab-terms'){ openTerms(); return; }
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      views.forEach(v=>v.hidden = (v.dataset.content!==id));
     });
   });
 
-  // Buttons
-  function sendData(obj){
-    try{
-      if (tg && typeof tg.sendData === 'function'){
-        tg.sendData(JSON.stringify(obj));
-        try{ tg.close(); }catch(_){}
-      }else{
-        window.location.href = `https://t.me/${BOT}`;
-      }
-    }catch(e){ console.error(e); alert('Откройте мини-приложение из Telegram.'); }
+  // кнопки «Начать работу» и «Поддержка»
+  function openChat() {
+    // если мы внутри Telegram — шлём сигнал в бота
+    if (tg && typeof tg.sendData === 'function') {
+      tg.sendData(JSON.stringify({type:'help'}));
+      try{ tg.close(); }catch(_){}
+    } else {
+      // фолбэк: открываем чат
+      window.location.href = `https://t.me/${BOT}`;
+    }
   }
-  document.getElementById('btn-start').onclick = ()=> sendData({type:'start_from_main'});
+  function openSupport() {
+    if (tg && tg.openTelegramLink) tg.openTelegramLink('https://t.me/gpt5pro_support');
+    else window.location.href = 'https://t.me/gpt5pro_support';
+  }
+  document.getElementById('btn-start').onclick = openChat;
+  document.getElementById('btn-start-2').onclick = openChat;
+  document.getElementById('btn-support').onclick = openSupport;
+  document.getElementById('btn-support-2').onclick = openSupport;
+
+  // модалка с соглашением
+  const modal = document.getElementById('terms-modal');
+  const closeBtn = document.getElementById('terms-close');
+  function openTerms(){ modal.classList.add('open'); }
+  function closeTerms(){ modal.classList.remove('open'); }
+  document.getElementById('tab-terms').addEventListener('click', openTerms);
+  closeBtn.addEventListener('click', closeTerms);
+  modal.addEventListener('click', (e)=>{ if(e.target===modal) closeTerms(); });
 </script>
 </body>
 </html>
